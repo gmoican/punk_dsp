@@ -1,0 +1,62 @@
+#pragma once
+
+#include "juce_dsp/juce_dsp.h"
+
+/**
+ * @class Lifter
+ * @brief Implements a standard, stable, feed-forward upward compressor.
+ *
+ * All core dynamics processing, including sidechain detection, gain computation,
+ * and envelope smoothing, is contained here.
+ */
+class Lifter
+{
+public:
+    Lifter();
+    ~Lifter() = default;
+
+    void prepare(double sampleRate, int totalNumChannels);
+    
+    float calculateTimeCoeff(float sampleRate, float time_ms);
+    
+    void updateRatio(float newRatio);
+    void updateRange(float newRange);
+    void updateKnee(float newKnee);
+    void updateAttack(float sampleRate, float newAttMs);
+    void updateRelease(float sampleRate, float newRelMs);
+    void updateMakeUp(float newMakeUp_dB);
+    void updateMix(float newMix);
+    
+    float getGainAddition();
+    
+    /**
+     * @brief Processes the audio buffer in-place, applying the upward compression.
+     *
+     * @param processedBuffer This buffer is overwritten with the fully wet, compressed signal.
+     */
+    void process_inplace(juce::AudioBuffer<float>& processedBuffer);
+    
+    /**
+     * @brief Processes the audio buffer and returns a new buffer with the upward compression.
+     *
+     * @param inputBuffer This buffer won't be affected by the processing
+     */
+    juce::AudioBuffer<float> process(juce::AudioBuffer<float>& inputBuffer);
+
+private:
+    // --- Internal State ---
+    std::vector<float> envelope; // Stores the current applied linear gain factor
+    
+    // Parameters used for the current block
+    float ratio = 4.0f;             // Linear ratio (e.g., 4.0 for 4:1)
+    float rangedB = -40.0f;         // Threshold in dB
+    float kneedB = 6.0f;            // Knee width in dB
+    float attackCoeff = 0.0f;       // Smoothing coefficient (Attack)
+    float releaseCoeff = 0.0f;      // Smoothing coefficient (Release)
+    float makeUpGain_linear = 1.0f; // Compensation gain after the compression takes place
+    float currentGA_linear = 1.0f;  // Gain reduction being applied currently
+    float mix = 1.0f;               // Mix (dry/wet)
+
+    // --- Prevent copy and move ---
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lifter)
+};
