@@ -10,7 +10,7 @@
   license:          MIT License
   minimumCppStandard: 17
 
-  dependencies:     juce_audio_basics juce_gui_basics
+  dependencies:     juce_audio_basics, juce_gui_basics
   OSXFrameworks:
   iOSFrameworks:
   linuxLibs:
@@ -26,13 +26,16 @@ namespace punk_dsp
 {
     // --- DSP ---
     // Dynamics
-    #include "dsp/Dynamics/Compressor.h"
-    #include "dsp/Dynamics/Lifter.h"
-    #include "dsp/Dynamics/Gate.h"
+    #include "source/dsp/Dynamics/Compressor.h"
+    #include "source/dsp/Dynamics/Lifter.h"
+    #include "source/dsp/Dynamics/Gate.h"
 
     // Distortion
-    #include "dsp/Distortion/Waveshaper.h"
+    #include "source/dsp/Distortion/Waveshaper.h"
 
     // --- GUI ---
-    #include "gui/LevelMeter.h"
+    #include "source/gui/LevelMeter.h"
+
+    // --- UTILS ---
+    #include "source/utils/PresetManager.h"
 }

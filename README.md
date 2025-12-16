@@ -4,6 +4,12 @@
 
 I want to write a documentation so clean and curated that even a dumbass like me can understand. I hope you understand how hard that can be...
 
+**Inmediate to-dos:**
+- Implement workbench plugin
+- Test waveshapers
+- Refactor everything inside Dynamics
+    - Write Envelope-follower ??
+
 ---------
 
 A collection of utility classes for DSP, GUI, and general utilities I am using across multiple JUCE projects.
