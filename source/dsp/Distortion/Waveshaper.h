@@ -27,10 +27,14 @@ public:
     float applyATanClipper(float sample);
     
     // Buffer processing
-    void applySoftClipper(juce::AudioBuffer<float>& processedBuffer);
-    void applyHardClipper(juce::AudioBuffer<float>& processedBuffer);
-    void applyTanhClipper(juce::AudioBuffer<float>& processedBuffer);
-    void applyATanClipper(juce::AudioBuffer<float>& processedBuffer);
+    void applySoftClipper(juce::AudioBuffer<float>& inputBuffer);
+    void applyHardClipper(juce::AudioBuffer<float>& inputBuffer);
+    void applyTanhClipper(juce::AudioBuffer<float>& inputBuffer);
+    void applyATanClipper(juce::AudioBuffer<float>& inputBuffer);
+
+    // Parameter Updates
+    void setGainFactor(float newGain);
+    void setParamFactor(float newParam);
 
 private:
     float gainFactor { 1.0f };

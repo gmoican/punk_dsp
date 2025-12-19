@@ -23,6 +23,17 @@ void Waveshaper::updateParameter (const juce::String& paramID, float value)
     // else ignore unknown parameter 
 }
 
+// --- --- PARAMETER UPDATES --- --
+void Waveshaper::setGainFactor(float newGain)
+{
+    gainFactor = newGain;
+}
+
+void Waveshaper::setParamFactor(float newParam)
+{
+    param = newParam;
+}
+
 // --- --- SAMPLE PROCESSING --- ---
 float Waveshaper::applySoftClipper(float sample)
 {
@@ -50,54 +61,54 @@ float Waveshaper::applyATanClipper(float sample)
 }
 
 // --- --- BUFFER PROCESSING --- ---
-void Waveshaper::applySoftClipper(juce::AudioBuffer<float>& processedBuffer)
+void Waveshaper::applySoftClipper(juce::AudioBuffer<float>& inputBuffer)
 {
-    const int numSamples = processedBuffer.getNumSamples();
-    const int numChannels = processedBuffer.getNumChannels();
+    const int numSamples = inputBuffer.getNumSamples();
+    const int numChannels = inputBuffer.getNumChannels();
 
     for (int channel = 0; channel < numChannels; ++channel)
     {
-        float* channelData = processedBuffer.getWritePointer(channel);
+        float* channelData = inputBuffer.getWritePointer(channel);
         for (int sample = 0; sample < numSamples; ++sample)
-            channelData[sample] = applySoftClipper(channelData[sample], gainFactor);
+            channelData[sample] = applySoftClipper(channelData[sample]);
     }
 }
 
-void Waveshaper::applyHardClipper(juce::AudioBuffer<float>& processedBuffer)
+void Waveshaper::applyHardClipper(juce::AudioBuffer<float>& inputBuffer)
 {
-    const int numSamples = processedBuffer.getNumSamples();
-    const int numChannels = processedBuffer.getNumChannels();
+    const int numSamples = inputBuffer.getNumSamples();
+    const int numChannels = inputBuffer.getNumChannels();
 
     for (int channel = 0; channel < numChannels; ++channel)
     {
-        float* channelData = processedBuffer.getWritePointer(channel);
+        float* channelData = inputBuffer.getWritePointer(channel);
         for (int sample = 0; sample < numSamples; ++sample)
-            channelData[sample] = applyHardClipper(channelData[sample], gainFactor);
+            channelData[sample] = applyHardClipper(channelData[sample]);
     }
 }
 
-void Waveshaper::applyTanhClipper(juce::AudioBuffer<float>& processedBuffer)
+void Waveshaper::applyTanhClipper(juce::AudioBuffer<float>& inputBuffer)
 {
-    const int numSamples = processedBuffer.getNumSamples();
-    const int numChannels = processedBuffer.getNumChannels();
+    const int numSamples = inputBuffer.getNumSamples();
+    const int numChannels = inputBuffer.getNumChannels();
 
     for (int channel = 0; channel < numChannels; ++channel)
     {
-        float* channelData = processedBuffer.getWritePointer(channel);
+        float* channelData = inputBuffer.getWritePointer(channel);
         for (int sample = 0; sample < numSamples; ++sample)
-            channelData[sample] = applyTanhClipper(channelData(sample), gainFactor);
+            channelData[sample] = applyTanhClipper(channelData(sample));
     }
 }
 
-void Waveshaper::applyATanClipper(juce::AudioBuffer<float>& processedBuffer)
+void Waveshaper::applyATanClipper(juce::AudioBuffer<float>& inputBuffer)
 {
-    const int numSamples = processedBuffer.getNumSamples();
-    const int numChannels = processedBuffer.getNumChannels();
+    const int numSamples = inputBuffer.getNumSamples();
+    const int numChannels = inputBuffer.getNumChannels();
 
     for (int channel = 0; channel < numChannels; ++channel)
     {
-        float* channelData = processedBuffer.getWritePointer(channel);
+        float* channelData = inputBuffer.getWritePointer(channel);
         for (int sample = 0; sample < numSamples; ++sample)
-            channelData[sample] = applyATanClipper(channelData(sample), gainFactor);
+            channelData[sample] = applyATanClipper(channelData(sample));
     }
 }
