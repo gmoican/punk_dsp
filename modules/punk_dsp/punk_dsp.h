@@ -26,16 +26,16 @@ namespace punk_dsp
 {
     // --- DSP ---
     // Dynamics
-    #include "source/dsp/Dynamics/Compressor.h"
-    #include "source/dsp/Dynamics/Lifter.h"
-    #include "source/dsp/Dynamics/Gate.h"
+    #include "dsp/Dynamics/Compressor.h"
+    #include "dsp/Dynamics/Lifter.h"
+    #include "dsp/Dynamics/Gate.h"
 
     // Distortion
-    #include "source/dsp/Distortion/Waveshaper.h"
+    #include "dsp/Distortion/Waveshaper.h"
 
     // --- GUI ---
-    #include "source/gui/LevelMeter.h"
+    #include "gui/LevelMeter.h"
 
     // --- UTILS ---
-    #include "source/utils/PresetManager.h"
+    #include "utils/PresetManager.h"
 }
