@@ -37,7 +37,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     // --- Workbench Logic ---
-    enum class AlgorithmType { None, Compressor, Filter, Waveshaper };
+    enum class AlgorithmType { None, Compressor, Lifter, Gate, Waveshaper };
     void setAlgorithm(AlgorithmType type);
     AlgorithmType getCurrentType() const { return currentType; }
     

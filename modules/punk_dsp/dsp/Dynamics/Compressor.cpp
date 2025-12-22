@@ -7,12 +7,52 @@ Compressor::Compressor()
 {
 }
 
-void Compressor::prepare(double sampleRate, int totalNumChannels)
+void Compressor::prepare(const juce::dsp::ProcessSpec& spec)
 {
-    juce::ignoreUnused(sampleRate);
+    sampleRate = spec.sampleRate;
+    envelope.assign (spec.numChannels, 0.0f);
+    
+    // Recalculate time coefficients based on current sample rate
+    attackCoeff = calculateTimeCoeff (attackMs);
+    releaseCoeff = calculateTimeCoeff (releaseMs);
+}
 
-    // Resize the envelope vector to match the channel count
-    envelope.assign(totalNumChannels, 0.0f); // Initialize gain to 0 dB
+void Compressor::reset()
+{
+    std::fill (envelope.begin(), envelope.end(), 0.0f);
+}
+
+// =============================================================================
+// Parameter Mapping (For the Workbench UI)
+// =============================================================================
+
+std::vector<ParameterInfo> Compressor::getParameters() const
+{
+    return {
+        { "threshold", "Threshold",  -12.0f,    -60.0f, 0.0f,       "dB" },
+        { "ratio",     "Ratio",      4.0f,      1.0f,   99.0f,      ":1" },
+        { "knee",      "Knee",       0.0f,      0.0f,   24.0f,      "dB" },
+        { "attack",    "Attack",     10.0f,     0.1f,   5000.0f,    "ms" },
+        { "release",   "Release",    100.0f,    1.0f,   5000.0f,    "ms" },
+        { "makeup",    "Make-up",    0.0f,      -24.0f, 24.0f,      "dB" },
+        { "mix",       "Mix",        100.0f,    0.0f,   100.0f,     "%" },
+        { "topology",  "Topology",   1.0f,      0.0f,   1.0f,       "",     ParameterInfo::Type::Boolean  }
+    };
+}
+
+void Compressor::updateParameter (const juce::String& paramID, float value)
+{
+    if (paramID == "threshold") { threshold = value; updateKneeRange(); }
+    else if (paramID == "ratio") { 
+        ratio = value; 
+        compressionSlope = 1.0f - (1.0f / ratio); 
+    }
+    else if (paramID == "knee")    { knee = value; updateKneeRange(); }
+    else if (paramID == "attack")  { attackMs = value; attackCoeff = calculateTimeCoeff(value); }
+    else if (paramID == "release") { releaseMs = value; releaseCoeff = calculateTimeCoeff(value); }
+    else if (paramID == "makeup")  { makeUpGain = value; }
+    else if (paramID == "mix")     { mix = value; }
+    else if (paramID == "topology") { useFeedForward = (value > 0.5f); }
 }
 
 // --- Parameter Updates ---
@@ -24,6 +64,7 @@ float Compressor::calculateTimeCoeff(float sampleRate, float time_ms)
     return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
 }
 
+/*
 void Compressor::updateRatio(float newRatio)
 {
     ratio = newRatio;
@@ -41,13 +82,14 @@ void Compressor::updateKnee(float newKnee)
     kneedB = newKnee;
     updateKneeRange();
 }
+*/
 
 void Compressor::updateKneeRange()
 {
     kneeStart = thresdB - (kneedB / 2.0f);
     kneeEnd = thresdB + (kneedB / 2.0f);
 }
-
+/*
 void Compressor::updateAttack(float sampleRate, float newAttMs)
 {
     attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
@@ -67,6 +109,7 @@ void Compressor::updateMix(float newMix)
 {
     mix = newMix / 100.0f;
 }
+*/
 
 // --- Core Math Logic ---
 

@@ -8,12 +8,15 @@
 */
 struct ParameterInfo
 {
+    enum class Type { Continuous, Boolean };
+
     juce::String paramID;
     juce::String name;
     float defaultValue;
     float minValue;
     float maxValue;
     juce::String unit = "";
+    Type type = Type::Continuous;
 };
 
 class IDSPAlgorithm
@@ -23,7 +26,7 @@ public:
 
     // --- Core Audio Lifecycle ---
     virtual void prepare (const juce::dsp::ProcessSpec& spec) = 0;
-    virtual void process (juce::dsp::AudioBlock<float>& block) = 0;
+    virtual void processBlock (juce::dsp::AudioBlock<float>& block) = 0;
     virtual void reset() = 0;
 
     // --- Parameter Management ---

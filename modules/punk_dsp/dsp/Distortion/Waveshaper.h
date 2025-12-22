@@ -39,6 +39,7 @@ public:
 private:
     float gainFactor { 1.0f };
     float param { 1.0f };       // Unused for now, will be used in future parametric waveshapers
+    float bias { 0.0f };        // Unused for now...
 
     // --- Prevent copy and move ---
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Waveshaper)

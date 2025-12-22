@@ -22,6 +22,7 @@ private:
     // Storage for dynamically created sliders
     juce::OwnedArray<juce::Slider> sliders;
     juce::OwnedArray<juce::Label> labels;
+    juce::OwnedArray<juce::ToggleButton> toggles;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkbenchEditor)
 };

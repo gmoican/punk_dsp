@@ -37,24 +37,30 @@ void WorkbenchEditor::rebuildUI()
 {
     sliders.clear();
     labels.clear();
+    toggles.clear();
 
     auto* dsp = audioProcessor.getActiveDSP();
     if (!dsp) return;
 
-    auto params = dsp->getParameters();
-    for (auto& p : params)
+    for (auto& p : dsp->getParameters())
     {
-        // Create Slider
-        auto* s = sliders.add(std::make_unique<juce::Slider>());
-        s->setRange(p.minValue, p.maxValue);
-        s->setValue(p.defaultValue);
-        s->onValueChange = [dsp, p, s] { dsp->updateParameter(p.paramID, s->getValue()); };
-        addAndMakeVisible(s);
-
-        // Create Label
-        auto* l = labels.add(std::make_unique<juce::Label>("", p.name));
-        l->attachToComponent(s, false);
-        addAndMakeVisible(l);
+        if (p.type == ParameterInfo::Type::Boolean)
+        {
+            // --- Create a Toggle ---
+            auto* t = toggles.add(std::make_unique<juce::ToggleButton>(p.name));
+            t->setToggleState(p.defaultValue > 0.5f, juce::dontSendNotification);
+            
+            t->onClick = [dsp, p, t] {
+                dsp->updateParameter(p.paramID, t->getToggleState() ? 1.0f : 0.0f);
+            };
+            addAndMakeVisible(t);
+        }
+        else
+        {
+            // --- Create a Slider (Existing Logic) ---
+            auto* s = sliders.add(std::make_unique<juce::Slider>());
+            // ... range and callback ...
+        }
     }
     
     resized(); // Position the new items
