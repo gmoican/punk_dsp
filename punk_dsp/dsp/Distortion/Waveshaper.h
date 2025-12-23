@@ -1,7 +1,5 @@
 #pragma once
 
-#include "./IDSPAlgorithm.h"
-
 /**
  * @class Waveshaper
  * @brief Implements several types of waveshaping function
@@ -10,15 +8,11 @@
  * On its own, it works as a clipper
  * In combination with filters, adequate input gain and bias, it works as the core of distortion processors
  */
-class Waveshaper : public IDSPAlgorithm
+class Waveshaper
 {
 public:
     Waveshaper();
     ~Waveshaper() = default;
-
-    // --- Implementation of the parameter interface methods ---
-    std::vector<ParameterInfo> getParameters() const override;
-    void updateParameter (const juce::String& paramID, float value) override;
 
     // Sample processing
     float applySoftClipper(float sample);
@@ -35,6 +29,7 @@ public:
     // Parameter Updates
     void setGainFactor(float newGain);
     void setParamFactor(float newParam);
+    void setBiasFactor(float newBias);
 
 private:
     float gainFactor { 1.0f };

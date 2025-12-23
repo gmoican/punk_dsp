@@ -4,25 +4,6 @@ Waveshaper::Waveshaper()
 {
 }
 
-// --- --- PARAMS INTERFACE --- ---
-std::vector<ParameterInfo> Waveshaper::getParameters() const
-{
-    return
-    {
-        { "gain", "Gain", 1.0f, 0.0f, 20.0f, "" },
-        { "param", "Param", 1.0f, -0.9f, 20.0f, "" }
-    };
-}
-
-void Waveshaper::updateParameter (const juce::String& paramID, float value)
-{
-    if (paramID == "gain")
-        gainFactor = value;
-    else if (paramID == "param")
-        param = value;
-    // else ignore unknown parameter 
-}
-
 // --- --- PARAMETER UPDATES --- --
 void Waveshaper::setGainFactor(float newGain)
 {
@@ -32,6 +13,11 @@ void Waveshaper::setGainFactor(float newGain)
 void Waveshaper::setParamFactor(float newParam)
 {
     param = newParam;
+}
+
+void Waveshaper::setBiasFactor(float newBias)
+{
+    bias = newBias;
 }
 
 // --- --- SAMPLE PROCESSING --- ---
