@@ -23,7 +23,7 @@ void Waveshaper::setBiasFactor(float newBias)
 // --- --- SAMPLE PROCESSING --- ---
 float Waveshaper::applySoftClipper(float sample)
 {
-    return gainFactor * sample / (std::abs(sample) + 1.0f);
+    return gainFactor * sample / (::std::abs(sample) + 1.0f);
 }
 
 float Waveshaper::applyHardClipper(float sample)
@@ -33,7 +33,7 @@ float Waveshaper::applyHardClipper(float sample)
     else if (sample < -1.0f)
         return gainFactor * -2.0f / 3.0f;
     else
-        return gainFactor * (sample - std::pow(sample, 3.0f) / 3.0f);
+        return gainFactor * (sample - ::std::pow(sample, 3.0f) / 3.0f);
 }
 
 float Waveshaper::applyTanhClipper(float sample)
@@ -43,7 +43,7 @@ float Waveshaper::applyTanhClipper(float sample)
 
 float Waveshaper::applyATanClipper(float sample)
 {
-    return gainFactor * 2.0f / juce::MathConstants<float>::pi * std::atan(sample);
+    return gainFactor * 2.0f / juce::MathConstants<float>::pi * ::std::atan(sample);
 }
 
 // --- --- BUFFER PROCESSING --- ---

@@ -6,7 +6,7 @@
 class LevelMeter : public juce::Component, private juce::Timer
 {
 public:
-    LevelMeter(std::atomic<float>* levelPtr, const juce::String label) : levelPointer(levelPtr), meterLabel(label)
+    LevelMeter(::std::atomic<float>* levelPtr, const juce::String label) : levelPointer(levelPtr), meterLabel(label)
     {
         startTimerHz(30);
     }
@@ -89,7 +89,7 @@ private:
         repaint();
     }
     
-    std::atomic<float>* levelPointer;
+    ::std::atomic<float>* levelPointer;
     juce::String meterLabel;
     float currentLevel = -100.f;
     

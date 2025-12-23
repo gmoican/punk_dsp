@@ -19,12 +19,12 @@ void Gate::prepare(const juce::dsp::ProcessSpec& spec)
 
 void Gate::reset()
 {
-    std::fill (envelope.begin(), envelope.end(), 0.0f);
+    ::std::fill (envelope.begin(), envelope.end(), 0.0f);
 }
 
 float Gate::calculateTimeCoeff(float sampleRate, float time_ms)
 {
-    return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+    return ::std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
 }
 
 void Gate::updateRatio(float newRatio)
@@ -115,10 +115,10 @@ void Gate::process(juce::AudioBuffer<float>& inputBuffer)
         for (int sample = 0; sample < numSamples; ++sample)
         {
             float inputSample = channelData[sample];
-            float magnitude = std::abs (inputSample);
+            float magnitude = ::std::abs (inputSample);
             
             // Clamp magnitude to prevent log(0)
-            magnitude = std::max(magnitude, minMagnitude);
+            magnitude = ::std::max(magnitude, minMagnitude);
             
             // 1. SIDECHAIN: Convert magnitude to dB
             const float inputDB = juce::Decibels::gainToDecibels(magnitude);

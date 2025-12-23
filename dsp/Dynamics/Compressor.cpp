@@ -19,14 +19,14 @@ void Compressor::prepare(const juce::dsp::ProcessSpec& spec)
 
 void Compressor::reset()
 {
-    std::fill (envelope.begin(), envelope.end(), 0.0f);
+    ::std::fill (envelope.begin(), envelope.end(), 0.0f);
 }
 
 float Compressor::calculateTimeCoeff(float sampleRate, float time_ms)
 {
     // 1-pole filter coefficient calculation (alpha = e^(-1 / (sampleRate * time_in_seconds)))
     // We use -1.0f/tau as the exponent for the exponential smoothing factor.
-    return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+    return ::std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
 }
 
 
@@ -140,7 +140,7 @@ void Compressor::process(juce::AudioBuffer<float>& inputBuffer)
             }
             
             // 2. Detection (Sidechain)
-            float mag = std::max(std::abs(sidechainInput), minMagnitude);
+            float mag = ::std::max( ::std::abs(sidechainInput), minMagnitude );
             float inputDB = juce::Decibels::gainToDecibels(mag);
             
             // 3. Gain Computer & Ballistics

@@ -42,7 +42,7 @@ private:
     float calculateTimeCoeff (float sampleRate, float time_ms);
 
     // --- Internal State ---
-    std::vector<float> envelope; // Stores the current applied linear gain factor
+    ::std::vector<float> envelope; // Stores the current applied linear gain factor
     float currentGR_dB = 0.0f;
     
     // Parameters

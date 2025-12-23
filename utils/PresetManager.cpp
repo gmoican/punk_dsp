@@ -58,7 +58,7 @@ juce::File PresetManager::getFileForPreset (const juce::String& presetName) cons
 void PresetManager::savePreset (const juce::String& presetName)
 {
     // 1. Get the current state of the plugin as an XML object
-    std::unique_ptr<juce::XmlElement> xml (apvts.copyState().createXml());
+    ::std::unique_ptr<juce::XmlElement> xml (apvts.copyState().createXml());
     
     // 2. Write the XML data to the designated file path
     if (xml != nullptr)
@@ -89,7 +89,7 @@ void PresetManager::loadPreset (const juce::String& presetName)
     }
 
     // 1. Read the XML data from the file
-    std::unique_ptr<juce::XmlElement> xml (juce::XmlDocument::parse (presetFile));
+    ::std::unique_ptr<juce::XmlElement> xml (juce::XmlDocument::parse (presetFile));
     
     if (xml != nullptr && xml->hasTagName (apvts.state.getType()))
     {
