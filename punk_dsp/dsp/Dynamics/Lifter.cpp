@@ -8,12 +8,19 @@ Lifter::Lifter()
     // Initialize envelope vector size to 0
 }
 
-void Lifter::prepare(double sampleRate, int totalNumChannels)
+void Lifter::prepare(const juce::dsp::ProcessSpec& spec)
 {
-    juce::ignoreUnused(sampleRate);
+    sampleRate = spec.sampleRate;
+    envelope.assign (spec.numChannels, 1.0f);
     
-    // Resize the envelope vector to match the channel count
-    envelope.assign(totalNumChannels, 1.0f); // Initialize gain to 0 dB 
+    // Recalculate time coefficients based on current sample rate
+    attackCoeff = calculateTimeCoeff (10.0f);
+    releaseCoeff = calculateTimeCoeff (100.0f); 
+}
+
+void Lifter::reset()
+{
+    std::fill (envelope.begin(), envelope.end(), 1.0f);
 }
 
 float Lifter::calculateTimeCoeff(float sampleRate, float time_ms)

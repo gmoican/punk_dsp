@@ -7,12 +7,19 @@ Gate::Gate()
 {
 }
 
-void Gate::prepare(double sampleRate, int totalNumChannels)
+void Gate::prepare(const juce::dsp::ProcessSpec& spec)
 {
-    juce::ignoreUnused(sampleRate);
+    sampleRate = spec.sampleRate;
+    envelope.assign (spec.numChannels, 0.0f);
     
-    // Resize the envelope vector to match the channel count
-    envelope.assign(totalNumChannels, 0.0f); // Initialize gain to 0 dB
+    // Recalculate time coefficients based on current sample rate
+    attackCoeff = calculateTimeCoeff (10.0f);
+    releaseCoeff = calculateTimeCoeff (10.0f);
+}
+
+void Gate::reset()
+{
+    std::fill (envelope.begin(), envelope.end(), 0.0f);
 }
 
 float Gate::calculateTimeCoeff(float sampleRate, float time_ms)
@@ -127,6 +134,8 @@ void Gate::process(juce::AudioBuffer<float>& inputBuffer)
         }
         
         // Store the final envelope value for the start of the next block
-        envelope[channel] = currentGR_dB; 
+        envelope[channel] = currentGR_dB;
+        
+        if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
     }
 }

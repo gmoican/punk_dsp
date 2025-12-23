@@ -156,7 +156,7 @@ void Compressor::process(juce::AudioBuffer<float>& inputBuffer)
         }
         
         envelope[ch] = currentEnv;
-        // For meter reporting
-        if (ch == 0) currentGR_dB = currentEnv;
+        
+        if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
     }
 }

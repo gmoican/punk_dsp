@@ -37,7 +37,7 @@ public:
     void process(juce::AudioBuffer<float>& inputBuffer);
 
 private:
-    // Internal Math Methods (from our previous refactor)
+    // Internal Math Methods
     float calculateTargetGain (float inputDB);
     float updateEnvelope (float targetGR_dB, float currentEnv_dB);
     void updateKneeRange();
