@@ -20,12 +20,12 @@ void Lifter::prepare(const juce::dsp::ProcessSpec& spec)
 
 void Lifter::reset()
 {
-    ::std::fill (envelope.begin(), envelope.end(), 1.0f);
+    std::fill (envelope.begin(), envelope.end(), 1.0f);
 }
 
 float Lifter::calculateTimeCoeff(float sampleRate, float time_ms)
 {
-    return ::std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+    return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
 }
 
 void Lifter::updateRatio(float newRatio)
@@ -127,7 +127,7 @@ void Lifter::process(juce::AudioBuffer<float>& inputBuffer, bool useFeedForward)
             }
 
             // 2. Detection (Sidechain)
-            const float magnitude = ::std::max( ::std::abs(sidechainInput), minMagnitude );
+            const float magnitude = std::max( std::abs(sidechainInput), minMagnitude );
             const float inputDB = juce::Decibels::gainToDecibels(magnitude);
             
             // 3. ENVELOPE SMOOTHING (in dB)

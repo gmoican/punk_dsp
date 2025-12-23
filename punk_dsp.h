@@ -20,22 +20,19 @@
 *******************************************************************************/
 
 #pragma once
+#define PUNK_DSP_H_INCLUDED
 
-// Module namespace
-namespace punk_dsp
-{
-    // --- DSP ---
-    // Dynamics
-    #include "dsp/Dynamics/Compressor.h"
-    #include "dsp/Dynamics/Lifter.h"
-    #include "dsp/Dynamics/Gate.h"
+// --- DSP ---
+// Dynamics
+#include "dsp/Dynamics/Compressor.h"
+#include "dsp/Dynamics/Lifter.h"
+#include "dsp/Dynamics/Gate.h"
 
-    // Distortion
-    #include "dsp/Distortion/Waveshaper.h"
+// Distortion
+#include "dsp/Distortion/Waveshaper.h"
 
-    // --- GUI ---
-    #include "gui/LevelMeter.h"
+// --- GUI ---
+#include "gui/LevelMeter.h"
 
-    // --- UTILS ---
-    #include "utils/PresetManager.h"
-}
+// --- UTILS ---
+#include "utils/PresetManager.h"
