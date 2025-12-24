@@ -65,6 +65,11 @@ namespace punk_dsp
         mix = newMix / 100.0f;
     }
 
+    void Lifter::updateFeedForward(bool newFeedForward)
+    {
+        useFeedForward = newFeedForward;
+    }
+
     // --- Core Math Logic ---
 
     float Lifter::calculateTargetGain(float inputDB)
@@ -99,7 +104,7 @@ namespace punk_dsp
         return juce::Decibels::gainToDecibels(currentGA_linear);
     }
 
-    void Lifter::process(juce::AudioBuffer<float>& inputBuffer, bool useFeedForward)
+    void Lifter::process(juce::AudioBuffer<float>& inputBuffer)
     {
         const int numSamples = inputBuffer.getNumSamples();
         const int numChannels = inputBuffer.getNumChannels();

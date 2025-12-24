@@ -37,7 +37,7 @@ namespace punk_dsp
         * @param inputBuffer This buffer is overwritten with the fully wet, compressed signal.
         * @param useFeedForward Select when the sidechain signal is measured
         */
-        void process(juce::AudioBuffer<float>& inputBuffer, bool useFeedForward);
+        void process(juce::AudioBuffer<float>& inputBuffer);
 
     private:
         // Internal Math Methods
@@ -58,6 +58,7 @@ namespace punk_dsp
         float releaseCoeff      = 0.0f;     // Smoothing coefficient (Release)
         float makeUpGain_linear = 1.0f;     // Compensation gain after the compression takes place
         float mix               = 1.0f;     // Mix (dry/wet)
+        bool useFeedForward     = true;     // Use feed-forward or feed-back topology
         
         // Cached values for performance
         float sampleRate        = 44100.0f;
