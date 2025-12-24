@@ -3,160 +3,163 @@
 // Define a floor for magnitude detection to prevent log(0) and instability.
 static constexpr float minMagnitude = 0.00001f;     // Approx -100 dB
 
-Compressor::Compressor()
+namespace punk_dsp
 {
-}
-
-void Compressor::prepare(const juce::dsp::ProcessSpec& spec)
-{
-    sampleRate = spec.sampleRate;
-    envelope.assign (spec.numChannels, 0.0f);
-    
-    // Recalculate time coefficients based on current sample rate
-    attackCoeff = calculateTimeCoeff (10.0f);
-    releaseCoeff = calculateTimeCoeff (100.0f);
-}
-
-void Compressor::reset()
-{
-    std::fill (envelope.begin(), envelope.end(), 0.0f);
-}
-
-float Compressor::calculateTimeCoeff(float sampleRate, float time_ms)
-{
-    // 1-pole filter coefficient calculation (alpha = e^(-1 / (sampleRate * time_in_seconds)))
-    // We use -1.0f/tau as the exponent for the exponential smoothing factor.
-    return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
-}
-
-
-void Compressor::updateRatio(float newRatio)
-{
-    ratio = newRatio;
-    compressionSlope = 1.0f - (1.0f / newRatio);
-}
-
-void Compressor::updateThres(float newThres)
-{
-    thresdB = newThres;
-    updateKneeRange();
-}
-
-void Compressor::updateKnee(float newKnee)
-{
-    kneedB = newKnee;
-    updateKneeRange();
-}
-
-
-void Compressor::updateKneeRange()
-{
-    kneeStart = thresdB - (kneedB / 2.0f);
-    kneeEnd = thresdB + (kneedB / 2.0f);
-}
-
-void Compressor::updateAttack(float sampleRate, float newAttMs)
-{
-    attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
-}
-
-void Compressor::updateRelease(float sampleRate, float newRelMs)
-{
-    releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
-}
-
-void Compressor::updateMakeUp(float newMakeUp_dB)
-{
-    makeUpGaindB = newMakeUp_dB;
-}
-
-void Compressor::updateMix(float newMix)
-{
-    mix = newMix / 100.0f;
-}
-
-void Compressor::updateFeedForward(bool newFeedForward)
-{
-    useFeedForward = newFeedForward;
-}
-
-// --- Core Math Logic ---
-
-float Compressor::calculateTargetGain(float inputDB)
-{
-    if (inputDB > kneeEnd)
-        return (inputDB - thresdB) * compressionSlope;
-    
-    if (inputDB > kneeStart)
+    Compressor::Compressor()
     {
-        const float x = inputDB - kneeStart;
-        return (compressionSlope / (2.0f * kneedB)) * (x * x);
     }
 
-    return 0.0f;
-}
-
-float Compressor::updateEnvelope(float targetGR_dB, float currentEnv_dB)
-{
-    // If target reduction is greater than current (Attack), or less (Release)
-    float alpha = (targetGR_dB > -currentEnv_dB) ? attackCoeff : releaseCoeff;
-    
-    // Exponential smoothing: y[n] = a * y[n-1] + (1-a) * x[n]
-    float smoothedReduction = (alpha * -currentEnv_dB) + ((1.0f - alpha) * targetGR_dB);
-    return -smoothedReduction;
-}
-
-// --- Methods for GUI ---
-float Compressor::getGainReduction()
-{
-    return currentGR_dB;
-}
-
-void Compressor::process(juce::AudioBuffer<float>& inputBuffer)
-{
-    const int numSamples = inputBuffer.getNumSamples();
-    const int numChannels = inputBuffer.getNumChannels();
-    
-    if ((int)envelope.size() != numChannels)
-        envelope.assign(numChannels, 0.0f);
-    
-    for (int ch = 0; ch < numChannels; ++ch)
+    void Compressor::prepare(const juce::dsp::ProcessSpec& spec)
     {
-        float* channelData = inputBuffer.getWritePointer(ch);
-        float currentEnv = envelope[ch];
+        sampleRate = spec.sampleRate;
+        envelope.assign (spec.numChannels, 0.0f);
         
-        for (int sample = 0; sample < numSamples; ++sample)
+        // Recalculate time coefficients based on current sample rate
+        attackCoeff = calculateTimeCoeff (10.0f);
+        releaseCoeff = calculateTimeCoeff (100.0f);
+    }
+
+    void Compressor::reset()
+    {
+        std::fill (envelope.begin(), envelope.end(), 0.0f);
+    }
+
+    float Compressor::calculateTimeCoeff(float sampleRate, float time_ms)
+    {
+        // 1-pole filter coefficient calculation (alpha = e^(-1 / (sampleRate * time_in_seconds)))
+        // We use -1.0f/tau as the exponent for the exponential smoothing factor.
+        return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+    }
+
+
+    void Compressor::updateRatio(float newRatio)
+    {
+        ratio = newRatio;
+        compressionSlope = 1.0f - (1.0f / newRatio);
+    }
+
+    void Compressor::updateThres(float newThres)
+    {
+        thresdB = newThres;
+        updateKneeRange();
+    }
+
+    void Compressor::updateKnee(float newKnee)
+    {
+        kneedB = newKnee;
+        updateKneeRange();
+    }
+
+
+    void Compressor::updateKneeRange()
+    {
+        kneeStart = thresdB - (kneedB / 2.0f);
+        kneeEnd = thresdB + (kneedB / 2.0f);
+    }
+
+    void Compressor::updateAttack(float sampleRate, float newAttMs)
+    {
+        attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
+    }
+
+    void Compressor::updateRelease(float sampleRate, float newRelMs)
+    {
+        releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
+    }
+
+    void Compressor::updateMakeUp(float newMakeUp_dB)
+    {
+        makeUpGaindB = newMakeUp_dB;
+    }
+
+    void Compressor::updateMix(float newMix)
+    {
+        mix = newMix / 100.0f;
+    }
+
+    void Compressor::updateFeedForward(bool newFeedForward)
+    {
+        useFeedForward = newFeedForward;
+    }
+
+    // --- Core Math Logic ---
+
+    float Compressor::calculateTargetGain(float inputDB)
+    {
+        if (inputDB > kneeEnd)
+            return (inputDB - thresdB) * compressionSlope;
+        
+        if (inputDB > kneeStart)
         {
-            float input = channelData[sample];
+            const float x = inputDB - kneeStart;
+            return (compressionSlope / (2.0f * kneedB)) * (x * x);
+        }
+
+        return 0.0f;
+    }
+
+    float Compressor::updateEnvelope(float targetGR_dB, float currentEnv_dB)
+    {
+        // If target reduction is greater than current (Attack), or less (Release)
+        float alpha = (targetGR_dB > -currentEnv_dB) ? attackCoeff : releaseCoeff;
+        
+        // Exponential smoothing: y[n] = a * y[n-1] + (1-a) * x[n]
+        float smoothedReduction = (alpha * -currentEnv_dB) + ((1.0f - alpha) * targetGR_dB);
+        return -smoothedReduction;
+    }
+
+    // --- Methods for GUI ---
+    float Compressor::getGainReduction()
+    {
+        return currentGR_dB;
+    }
+
+    void Compressor::process(juce::AudioBuffer<float>& inputBuffer)
+    {
+        const int numSamples = inputBuffer.getNumSamples();
+        const int numChannels = inputBuffer.getNumChannels();
+        
+        if ((int)envelope.size() != numChannels)
+            envelope.assign(numChannels, 0.0f);
+        
+        for (int ch = 0; ch < numChannels; ++ch)
+        {
+            float* channelData = inputBuffer.getWritePointer(ch);
+            float currentEnv = envelope[ch];
             
-            // 1. Identify Sidechain Input based on Topology
-            float sidechainInput = input;
-            
-            if (!useFeedForward)
+            for (int sample = 0; sample < numSamples; ++sample)
             {
-                // Feed-back uses the PREVIOUS output (estimated by current envelope)
-                float prevGain = juce::Decibels::decibelsToGain(currentEnv + makeUpGaindB);
-                sidechainInput = input * prevGain;
+                float input = channelData[sample];
+                
+                // 1. Identify Sidechain Input based on Topology
+                float sidechainInput = input;
+                
+                if (!useFeedForward)
+                {
+                    // Feed-back uses the PREVIOUS output (estimated by current envelope)
+                    float prevGain = juce::Decibels::decibelsToGain(currentEnv + makeUpGaindB);
+                    sidechainInput = input * prevGain;
+                }
+                
+                // 2. Detection (Sidechain)
+                float mag = std::max( std::abs(sidechainInput), minMagnitude );
+                float inputDB = juce::Decibels::gainToDecibels(mag);
+                
+                // 3. Gain Computer & Ballistics
+                float targetGR = calculateTargetGain(inputDB);
+                currentEnv = updateEnvelope(targetGR, currentEnv);
+                
+                // 4. Apply Gain
+                float totalGainDB = currentEnv + makeUpGaindB;
+                float gainLinear = juce::Decibels::decibelsToGain(totalGainDB);
+                
+                float processed = input * gainLinear;
+                channelData[sample] = (processed * mix) + (input * (1.0f - mix));
             }
             
-            // 2. Detection (Sidechain)
-            float mag = std::max( std::abs(sidechainInput), minMagnitude );
-            float inputDB = juce::Decibels::gainToDecibels(mag);
+            envelope[ch] = currentEnv;
             
-            // 3. Gain Computer & Ballistics
-            float targetGR = calculateTargetGain(inputDB);
-            currentEnv = updateEnvelope(targetGR, currentEnv);
-            
-            // 4. Apply Gain
-            float totalGainDB = currentEnv + makeUpGaindB;
-            float gainLinear = juce::Decibels::decibelsToGain(totalGainDB);
-            
-            float processed = input * gainLinear;
-            channelData[sample] = (processed * mix) + (input * (1.0f - mix));
+            if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
         }
-        
-        envelope[ch] = currentEnv;
-        
-        if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
     }
 }
