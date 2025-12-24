@@ -47,12 +47,12 @@ namespace punk_dsp
 
     void Lifter::updateAttack(float newAttMs)
     {
-        attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
+        attackCoeff = calculateTimeCoeff(newAttMs);
     }
 
     void Lifter::updateRelease(float newRelMs)
     {
-        releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
+        releaseCoeff = calculateTimeCoeff(newRelMs);
     }
 
     void Lifter::updateMakeUp(float newMakeUp_dB)
@@ -129,7 +129,7 @@ namespace punk_dsp
                 }
 
                 // 2. Detection (Sidechain)
-                const float magnitude = std::max( std::abs(sidechainInput), minMagnitude );
+                const float magnitude = std::max( std::abs(sidechainInput), lifterMinMagnitude );
                 const float inputDB = juce::Decibels::gainToDecibels(magnitude);
                 
                 // 3. ENVELOPE SMOOTHING (in dB)

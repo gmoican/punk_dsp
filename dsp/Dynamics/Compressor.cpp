@@ -59,12 +59,12 @@ namespace punk_dsp
 
     void Compressor::updateAttack(float newAttMs)
     {
-        attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
+        attackCoeff = calculateTimeCoeff(newAttMs);
     }
 
     void Compressor::updateRelease(float newRelMs)
     {
-        releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
+        releaseCoeff = calculateTimeCoeff(newRelMs);
     }
 
     void Compressor::updateMakeUp(float newMakeUp_dB)
@@ -142,7 +142,7 @@ namespace punk_dsp
                 }
                 
                 // 2. Detection (Sidechain)
-                float mag = std::max( std::abs(sidechainInput), minMagnitude );
+                float mag = std::max( std::abs(sidechainInput), compMinMagnitude );
                 float inputDB = juce::Decibels::gainToDecibels(mag);
                 
                 // 3. Gain Computer & Ballistics

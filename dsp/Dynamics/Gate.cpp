@@ -54,12 +54,12 @@ namespace punk_dsp
 
     void Gate::updateAttack(float newAttMs)
     {
-        attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
+        attackCoeff = calculateTimeCoeff(newAttMs);
     }
 
     void Gate::updateRelease(float newRelMs)
     {
-        releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
+        releaseCoeff = calculateTimeCoeff(newRelMs);
     }
 
     void Gate::updateMix(float newMix)
@@ -117,7 +117,7 @@ namespace punk_dsp
             for (int sample = 0; sample < numSamples; ++sample)
             {
                 float inputSample = channelData[sample];
-                float magnitude = std::max( std::abs (inputSample), minMagnitude );
+                float magnitude = std::max( std::abs (inputSample), gateMinMagnitude );
                 
                 // 1. SIDECHAIN: Convert magnitude to dB
                 const float inputDB = juce::Decibels::gainToDecibels(magnitude);

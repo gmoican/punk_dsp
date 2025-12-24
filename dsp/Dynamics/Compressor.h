@@ -17,7 +17,7 @@
         Compressor();
         ~Compressor() = default;
 
-        void prepare(const juce::dsp::ProcessSpec& spec)
+        void prepare(const juce::dsp::ProcessSpec& spec);
         void reset();
 
         void updateRatio(float newRatio);
