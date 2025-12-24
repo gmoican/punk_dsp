@@ -1,7 +1,7 @@
 #include "Gate.h"
 
 // Define a small constant to prevent division by zero near the noise floor.
-static constexpr float minMagnitude = 0.000001f; // Approx -120 dB
+static constexpr float gateMinMagnitude = 0.000001f; // Approx -120 dB
 
 namespace punk_dsp
 {
@@ -24,7 +24,7 @@ namespace punk_dsp
         std::fill (envelope.begin(), envelope.end(), 0.0f);
     }
 
-    float Gate::calculateTimeCoeff(float sampleRate, float time_ms)
+    float Gate::calculateTimeCoeff(float time_ms)
     {
         return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
     }
@@ -52,12 +52,12 @@ namespace punk_dsp
         kneeEnd = thresdB + (kneedB / 2.0f);
     }
 
-    void Gate::updateAttack(float sampleRate, float newAttMs)
+    void Gate::updateAttack(float newAttMs)
     {
         attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
     }
 
-    void Gate::updateRelease(float sampleRate, float newRelMs)
+    void Gate::updateRelease(float newRelMs)
     {
         releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
     }

@@ -84,7 +84,7 @@ namespace punk_dsp
         {
             float* channelData = inputBuffer.getWritePointer(channel);
             for (int sample = 0; sample < numSamples; ++sample)
-                channelData[sample] = applyTanhClipper(channelData(sample));
+                channelData[sample] = applyTanhClipper(channelData[sample]);
         }
     }
 
@@ -97,7 +97,7 @@ namespace punk_dsp
         {
             float* channelData = inputBuffer.getWritePointer(channel);
             for (int sample = 0; sample < numSamples; ++sample)
-                channelData[sample] = applyATanClipper(channelData(sample));
+                channelData[sample] = applyATanClipper(channelData[sample]);
         }
     }
 }

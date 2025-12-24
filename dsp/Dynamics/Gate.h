@@ -23,8 +23,8 @@ namespace punk_dsp
         void updateRatio(float newRatio);
         void updateThres(float newThres);
         void updateKnee(float newKnee);
-        void updateAttack(float sampleRate, float newAttMs);
-        void updateRelease(float sampleRate, float newRelMs);
+        void updateAttack(float newAttMs);
+        void updateRelease(float newRelMs);
         void updateMix(float newMix);
         
         float getGainReduction();
@@ -41,7 +41,7 @@ namespace punk_dsp
         float calculateTargetGain (float inputDB);
         float updateEnvelope (float targetGR_dB, float currentEnv_dB);
         void updateKneeRange();
-        float calculateTimeCoeff (float sampleRate, float time_ms);
+        float calculateTimeCoeff (float time_ms);
 
         // --- Internal State ---
         std::vector<float> envelope; // Stores the current applied linear gain factor

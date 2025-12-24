@@ -18,6 +18,7 @@ PresetManager::PresetManager (juce::AudioProcessorValueTreeState& vts)
     // 2. Set the specific preset directory path
     presetDirectory = appDataDir.getChildFile (presetSubFolder);
 
+    /* NOT WORKING - TODO: FIX
     // 3. Ensure the directory exists. Create it if it doesn't.
     if (presetDirectory.createDirectory().wasSuccessful())
         DBG ("Preset directory created: " + presetDirectory.getFullPathName());
@@ -30,13 +31,14 @@ PresetManager::PresetManager (juce::AudioProcessorValueTreeState& vts)
     {
             apvts.state.setProperty(lastPresetProperty, currentPresetName, nullptr);
     }
+    */
 }
 
 //==========================================================================
 juce::StringArray PresetManager::getPresetNames() const
 {
     juce::StringArray names;
-    
+    /* NOT WORKING - TODO: FIX
     // Find all files in the directory with the correct extension
     for (const auto& entry : presetDirectory.findChildFiles (
         juce::File::FindFlags::findFiles, 0, "*" + presetExtension))
@@ -44,7 +46,7 @@ juce::StringArray PresetManager::getPresetNames() const
         // Remove the extension to get the clean preset name
         names.add (entry.getFileNameWithoutExtension());
     }
-
+    */
     return names;
 }
 
@@ -95,7 +97,7 @@ void PresetManager::loadPreset (const juce::String& presetName)
     {
         // 2. Create a ValueTree from the XML
         juce::ValueTree tree = juce::ValueTree::fromXml (*xml);
-        
+        /* NOT WORKING - TODO: FIX
         // 3. Attempt to load the state into the APVTS
         if (apvts.copyStateIfDifferent (tree))
         {
@@ -107,6 +109,7 @@ void PresetManager::loadPreset (const juce::String& presetName)
         {
             DBG ("ERROR: Failed to load state from XML for preset: " + presetName);
         }
+        */
     }
 }
 

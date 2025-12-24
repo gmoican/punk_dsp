@@ -1,7 +1,7 @@
 #include "Compressor.h"
 
 // Define a floor for magnitude detection to prevent log(0) and instability.
-static constexpr float minMagnitude = 0.00001f;     // Approx -100 dB
+static constexpr float compMinMagnitude = 0.00001f;     // Approx -100 dB
 
 namespace punk_dsp
 {
@@ -24,7 +24,7 @@ namespace punk_dsp
         std::fill (envelope.begin(), envelope.end(), 0.0f);
     }
 
-    float Compressor::calculateTimeCoeff(float sampleRate, float time_ms)
+    float Compressor::calculateTimeCoeff(float time_ms)
     {
         // 1-pole filter coefficient calculation (alpha = e^(-1 / (sampleRate * time_in_seconds)))
         // We use -1.0f/tau as the exponent for the exponential smoothing factor.
@@ -57,12 +57,12 @@ namespace punk_dsp
         kneeEnd = thresdB + (kneedB / 2.0f);
     }
 
-    void Compressor::updateAttack(float sampleRate, float newAttMs)
+    void Compressor::updateAttack(float newAttMs)
     {
         attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
     }
 
-    void Compressor::updateRelease(float sampleRate, float newRelMs)
+    void Compressor::updateRelease(float newRelMs)
     {
         releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
     }

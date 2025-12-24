@@ -1,7 +1,7 @@
 #include "Lifter.h"
 
 // Define a small constant to prevent division by zero near the noise floor.
-static constexpr float minMagnitude = 0.0001f; // Approx -100 dB
+static constexpr float lifterMinMagnitude = 0.0001f; // Approx -100 dB
 
 namespace punk_dsp
 {
@@ -25,7 +25,7 @@ namespace punk_dsp
         std::fill (envelope.begin(), envelope.end(), 1.0f);
     }
 
-    float Lifter::calculateTimeCoeff(float sampleRate, float time_ms)
+    float Lifter::calculateTimeCoeff(float time_ms)
     {
         return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
     }
@@ -45,12 +45,12 @@ namespace punk_dsp
         kneedB = newKnee;
     }
 
-    void Lifter::updateAttack(float sampleRate, float newAttMs)
+    void Lifter::updateAttack(float newAttMs)
     {
         attackCoeff = calculateTimeCoeff(sampleRate, newAttMs);
     }
 
-    void Lifter::updateRelease(float sampleRate, float newRelMs)
+    void Lifter::updateRelease(float newRelMs)
     {
         releaseCoeff = calculateTimeCoeff(sampleRate, newRelMs);
     }
