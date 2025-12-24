@@ -31,8 +31,5 @@
 // Distortion
 #include "dsp/Distortion/Waveshaper.h"
 
-// --- GUI ---
-#include "gui/LevelMeter.h"
-
 // --- UTILS ---
 #include "utils/PresetManager.h"
