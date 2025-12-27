@@ -7,9 +7,14 @@ namespace punk_dsp
     }
 
     // --- --- PARAMETER UPDATES --- --
-    void Waveshaper::setGainFactor(float newGain)
+    void Waveshaper::setInGain(float newInGain)
     {
-        gainFactor = newGain;
+        inGain = newInGain;
+    }
+
+    void Waveshaper::setInGain(float newOutGain)
+    {
+        outGain = newOutGain;
     }
 
     void Waveshaper::setParamFactor(float newParam)
@@ -25,27 +30,31 @@ namespace punk_dsp
     // --- --- SAMPLE PROCESSING --- ---
     float Waveshaper::applySoftClipper(float sample)
     {
-        return gainFactor * sample / (std::abs(sample) + 1.0f);
+        sample = inGain * sample;
+        return outGain * sample / (std::abs(sample) + 1.0f);
     }
 
     float Waveshaper::applyHardClipper(float sample)
     {
+        sample = inGain * sample;
         if (sample > 1.0f)
-            return gainFactor * 2.0f / 3.0f;
+            return outGain * 2.0f / 3.0f;
         else if (sample < -1.0f)
-            return gainFactor * -2.0f / 3.0f;
+            return outGain * -2.0f / 3.0f;
         else
-            return gainFactor * (sample - std::pow(sample, 3.0f) / 3.0f);
+            return outGain * (sample - std::pow(sample, 3.0f) / 3.0f);
     }
 
     float Waveshaper::applyTanhClipper(float sample)
     {
-        return gainFactor * 2.0f / juce::MathConstants<float>::pi * juce::dsp::FastMathApproximations::tanh(sample);
+        sample = inGain * sample;
+        return outGain * 2.0f / juce::MathConstants<float>::pi * juce::dsp::FastMathApproximations::tanh(sample);
     }
 
     float Waveshaper::applyATanClipper(float sample)
     {
-        return gainFactor * 2.0f / juce::MathConstants<float>::pi * std::atan(sample);
+        sample = inGain * sample;
+        return outGain * 2.0f / juce::MathConstants<float>::pi * std::atan(sample);
     }
 
     // --- --- BUFFER PROCESSING --- ---

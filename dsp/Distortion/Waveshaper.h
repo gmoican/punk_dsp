@@ -29,12 +29,14 @@ namespace punk_dsp
         void applyATanClipper(juce::AudioBuffer<float>& inputBuffer);
 
         // Parameter Updates
-        void setGainFactor(float newGain);
+        void setInGain(float newInGain);
+        void setOutGain(float newOutGain);
         void setParamFactor(float newParam);
         void setBiasFactor(float newBias);
 
     private:
-        float gainFactor { 1.0f };
+        float inGain { 1.0f };
+        float outGain { 1.0f };
         float param { 1.0f };       // Unused for now, will be used in future parametric waveshapers
         float bias { 0.0f };        // Unused for now...
 
