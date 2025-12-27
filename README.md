@@ -1,54 +1,52 @@
 # Punk DSP
 
-**WARNING**: This module is a work in progress. As long as you see this text here, you should not trust anything that goes below.
+I want to write a documentation so clean and curated that even a dumbass like me can understand. If you have any suggestions to make this repository better, do not hesitate to contact me.
 
-I want to write a documentation so clean and curated that even a dumbass like me can understand. I hope you understand how hard that can be...
+## Scope of the project
+I intend to write my own classes in this module to better organize my JUCE projects. I expect this module to grow as I attempt to create more plugins.
 
-**Inmediate to-dos:**
-- Implement workbench plugin
-- Test waveshapers
-- Refactor everything inside Dynamics
-    - Write Envelope-follower ??
-
----------
-
-A collection of utility classes for DSP, GUI, and general utilities I am using across multiple JUCE projects.
-
-## Features
-
-- **DSP Utilities**: Description of your DSP classes
-- **GUI Components**: Description of your GUI components
-- **General Utilities**: Description of your utility classes
-
-## Requirements
-
-- JUCE 7.0.0 or later
-- C++17 or later
-- CMake 3.16 or later (for CMake integration)
+This is a high-level overview of my current ambitions towards this project:
+* **DSP:** My main focus is to write DSP processors. This is where I intend to put most of my work right now. Here are some features that I want to bring in the inmediate future:
+    - Parametric waveshapers.
+    - Envelope follower.
+    - Tube emulation.
+* **GUI:** I am a sucker for GUI design and currently prefer to use `Custom Look&Feel` implementations.
+* **Utility:** I can only think of a `PresetManager` for this category...
 
 ## Installation
 
 ### Using CMake
+I've gotten used to building my JUCE plugins with CMake so I suggest using this method for adding my module in your project.
 
-1. Clone or add this module to your project:
+1. I like having a separated folder for JUCE modules in my plugin repositories. In this folder, I add this module:
 
 ```bash
-git clone https://github.com/yourusername/my_module.git
+git submodule add -b main https://github.com/gmoican/punk_dsp.git
 ```
 
 2. Add to your CMakeLists.txt:
 cmake
 
 ```cmake
-juce_add_module(/path/to/my_module)
+juce_add_module(modules/punk_dsp)
 
 target_link_libraries(YourTarget
-    PRIVATE
-        my_module
+    INTERFACE
+    my_module
 )
 ```
 
+3. For updating the submodule, the first line should work fine. Sometimes, my module isn't updated in my plugin so I run the second line instead to force the merge.
+
+```bash
+git submodule update
+
+git submodule update --remote --merge
+```
+
 ### Using Projucer
+
+I have not tested if this method works. I suggest sticking to CMake even if it is a pain in the ass to learn... In any case, the method should be the following:
 
 1. Add the module path in Projucer under `File > Add a module...`
 2. Select `punk_dsp` from your cloned repository
@@ -57,6 +55,9 @@ target_link_libraries(YourTarget
 ## Usage
 
 ### DSP Modules
+For now, all my custom classes are inside the `punk_dsp::` namespace. Since most of my current code is for DSP processors, I don't intend to change this but maybe, in a distant future, I may add a `::dsp:: / ::gui:: / ::utils::` distinction.
+
+All my DSP processors have a very similar approach for implementing them in your `PluginProcessor`. There is a quick guide below, but you can check the `README` in the specific folder of this repo in case of doubt.
 
 ```cpp
 #include <punk_dsp/punk_dsp.h>
@@ -65,40 +66,25 @@ target_link_libraries(YourTarget
 punk_dsp::Compressor processor;
 
 // PluginProcessor.cpp -> prepare
-processor.prepare(sampleRate, blockSize);
+juce::dsp::ProcessSpec spec;
+spec.maximumBlockSize = samplesPerBlock;
+spec.numChannels = getTotalNumOutputChannels();
+spec.sampleRate = sampleRate;
 
-// PluginProcessor.cpp -> prepare
+processor.prepare(spec);
+
+// PluginProcessor.cpp -> Parameter updater function
+processor.updateParameter(newParameterValue);
+
+// PluginProcessor.cpp -> process
 processor.process(buffer);
 ```
 
-### GUI Modules
+For detailed documentation on individual classes and processors, see check the `README` files inside the DSP and Utils folders.
 
-```cpp
-#include <punk_dsp/punk_dsp.h>
-
-// In your PluginEditor.h
-punk_dsp::LevelMeter levelMeter;
-
-// PluginEditor.cpp
-addAndMakeVisible(levelMeter);
-```
-
-## Documentation
-
-For detailed documentation on individual classes, see the inline comments in the header files.
-
-## License
-This module is licensed under the MIT license. See LICENSE file for details.
-
-## Contributing
-
-Contributions are welcome! Please ensure:
-- Code follows the existing style
-- All changes are tested
-- Documentation is updated
-
-## Author
-Guillermo Moñino Cánovas - your.email@example.com
+## Example projects
+Here are some plugins made with **`punk_dsp`**:
+* [PunkOTT](https://github.com/gmoican/PunkOTT) (single-band) and [PunkOTT-MB](https://github.com/gmoican/PunkOTT-MB) (multi-band), my personal take of the _Over-The-Top_ style dynamics processor.
 
 ## Changelog
 ### Version 1.0.0
