@@ -10,44 +10,71 @@ Jump to each processor:
 
 The `Waveshaper` class implements four different waveshaping algorithms commonly used in audio processing for distortion, saturation, and harmonic enhancement. Each algorithm offers distinct sonic characteristics, from smooth soft clipping to aggressive hard clipping, although the sound depends mainly on how you combine these functions with other processors. Check out the following picture to see the visual representation of each waveshaper function:
 
-![waveshaper functions](docs/waveshapers.png)
-
+Unity in/out gain    |  Output gain increased    | Input gain increased
+:-------------------------:|:-------------------------:|:-------------------------:
+![](../../docs/distortion/waveshaper_1.png)  |  ![](../../docs/distortion/waveshaper_2.png) | ![](../../docs/distortion/waveshaper_3.png)
 
 ### Features
 
-- **Four waveshaping algorithms**: Soft Clipper, Hard Clipper, Tanh Clipper, and ATan Clipper
-- **Flexible processing**: Process individual samples or entire audio buffers
-- **Configurable parameters**: Adjustable gain, parameter, and bias factors
-- **Namespace organization**: Clean `punk_dsp` namespace
+- **Four waveshaping algorithms**: Soft Clipper, Hard Clipper, Tanh Clipper, and ArcTan Clipper. See the picture above to see a comparison of the different curves.
+- **Flexible processing**: Process individual samples or entire audio buffers.
+- **Configurable parameters**:
+    - `inGain` modifies the waveshaper behaviour.
+    - `outGain` is a utility parameter intended to be used for compensating the volume difference.
+    - `param` is used in a parametric waveshaper (work in progress, not functional right now).
+    - `bias` modifies the DC offset for asymmetric shaping (work in progress, not functional right now).
 
-### Class Structure
-
-#### Waveshaper
-
-The main class providing waveshaping functionality.
-
-##### Private Members
-
-- `float gainFactor` - Output gain multiplier applied after waveshaping, meant to be used for compensating the volume difference the standard waveshaper can produce
-- `float param` - Reserved parameter for future algorithm variations.
-- `float bias` - Reserved bias parameter for DC offset or asymmetric shaping.
-
-##### Public Methods
-
-###### Parameter Setters
+### Usage examples
 
 ```cpp
-// Sets the input gain factor, meant to change the function shape.
-void setInGain(float newGain)
+// --- PluginProcessor.h ---
+#include "punk_dsp/punk_dsp.h"
 
-// Sets the output gain factor, meant to compensate the signal level.
-void setOutGain(float newGain)
+class PluginProcessor : public juce::AudioProcessor
+{
+public:
+    /* Your processor public stuff
+     * ...
+     */
+private:
+    /* Your processor public stuff
+     * ...
+     */
+    punk_dsp::Waveshaper waveshaper;
+};
 
-// Sets the parameter factor (reserved for future use).
-void setParamFactor(float newParam)
+// --- PluginProcessor.cpp ---
+void PluginProcessor::updateParameters()
+{
+    // Your code...
 
-// Sets the bias factor (reserved for future use).
-void setBiasFactor(float newBias)
+    waveshaper.setInGain( newInGain );      // Make sure this values are in linear range
+    waveshaper.setOutGain( newOutGain );    // Make sure this values are in linear range
+    waveshaper.setParamFactor( newParam );  // Not working for now...
+    waveshaper.setBiasFactor( newBias );    // Value between -1.0 and 1.0
+
+    // Your code...
+}
+
+void PunkOTTProcessor::processBlock (juce::AudioBuffer<float>& buffer)
+{
+    // Sample application
+    for (int channel = 0; channel < numChannels; ++channel)
+    {
+        float* channelData = inputBuffer.getWritePointer(channel);
+        for (int sample = 0; sample < numSamples; ++sample)
+            channelData[sample] = applySoftClipper(channelData[sample]);
+            channelData[sample] = applyHardClipper(channelData[sample]);
+            channelData[sample] = applyTanhClipper(channelData[sample]);
+            channelData[sample] = applyATanClipper(channelData[sample]);
+    }
+
+    // Buffer application
+    waveshaper.applySoftClipper(buffer);
+    waveshaper.applyHardClipper(buffer);
+    waveshaper.applyTanhClipper(buffer);
+    waveshaper.applyATanClipper(buffer);
+}
 ```
 
 ## Tube
