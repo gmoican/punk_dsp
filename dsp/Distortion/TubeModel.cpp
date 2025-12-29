@@ -57,11 +57,6 @@ namespace punk_dsp
         sagTime = juce::jlimit(0.1f, 100.0f, time_ms);
     }
 
-    void TubeModel::setSagUse(bool useSag)
-    {
-        applySag = useSag;
-    }
-
     // --- --- PROCESSING --- ---
     float TubeModel::processSample(float sample)
     {
@@ -81,10 +76,9 @@ namespace punk_dsp
         else
             harmonics = harmonicGain * addHarmonics(x);
 
-        if (applySag)
-            return (output + harmonics) * sagResponse * outGain;
-        else
-            return (output + harmonics) * outGain;
+        calculateSag(x);
+
+        return (output + harmonics) * sagResponse * outGain;
     }
 
     void TubeModel::processBuffer(juce::AudioBuffer<float>& inputBuffer)

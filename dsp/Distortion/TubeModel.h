@@ -34,7 +34,6 @@ namespace punk_dsp
         void setHarmonicSidechain(bool usePostDrive);
 
         void setSagTime(float time_ms);
-        void setSagUse(bool useSag);
 
     private:
         float drive { 1.0f };
@@ -50,10 +49,9 @@ namespace punk_dsp
         float harmonicBalance { 0.5f };
         bool harmonicSidechain { true };
 
-        float sagTime { 100.0f };   // Milliseconds
+        float sagTime { 100.0f };   // Milliseconds - if set to 100ms, sagResponse stays at 1.0 = no sag
         float sagResponse { 1.0f }; // 1.0 = no sag, <1.0 = reduced gain
         float sagLastSample { 0.0f };
-        bool applySag = { false };
 
         // Extra processing
         float addHarmonics(float inputSignal);
