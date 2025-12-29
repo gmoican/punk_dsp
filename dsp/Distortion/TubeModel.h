@@ -2,9 +2,9 @@
 
 /**
  * @class TubeModel
- * @brief Implements several types of waveshaping function
+ * @brief Implements parameters to model a tube transfer function
  *
- * Contains some waveshaping functions
+ * Similar to the Waveshaper, but with a different approach
  * On its own, it works as a clipper
  * In combination with filters, adequate input gain and bias, it works as the core of distortion processors
  */
@@ -22,13 +22,19 @@ namespace punk_dsp
         // Parameter Updates
         void setDrive(float newDrive);
         void setOutGain(float newOutGain);
+
         void setBiasPre(float newBiasPre);
         void setBiasPost(float newBiasPost);
+
         void setCoeffPos(float newCoeffPos);
         void setCoeffNeg(float newCoeffNeg);
+
         void setHarmonicGain(float newHarmGain);
         void setHarmonicBalance(float newBalance);
         void setHarmonicSidechain(bool usePostDrive);
+
+        void setSagTime(float time_ms);
+        void setSagUse(bool useSag);
 
     private:
         float drive { 1.0f };
@@ -39,13 +45,19 @@ namespace punk_dsp
 
         float coeffPos { 1.0f };
         float coeffNeg { 1.2f };
-        
+
         float harmonicGain { 0.1f };
         float harmonicBalance { 0.5f };
         bool harmonicSidechain { true };
 
+        float sagTime { 100.0f };   // Milliseconds
+        float sagResponse { 1.0f }; // 1.0 = no sag, <1.0 = reduced gain
+        float sagLastSample { 0.0f };
+        bool applySag = { false };
+
         // Extra processing
         float addHarmonics(float inputSignal);
+        void calculateSag(float inputSignal);
 
         // --- Prevent copy and move ---
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TubeModel)
