@@ -12,7 +12,7 @@ namespace punk_dsp
         inGain = newInGain;
     }
 
-    void Waveshaper::setInGain(float newOutGain)
+    void Waveshaper::setOutGain(float newOutGain)
     {
         outGain = newOutGain;
     }
