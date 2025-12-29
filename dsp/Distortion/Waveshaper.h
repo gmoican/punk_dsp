@@ -31,14 +31,14 @@ namespace punk_dsp
         // Parameter Updates
         void setInGain(float newInGain);
         void setOutGain(float newOutGain);
-        void setParamFactor(float newParam);
-        void setBiasFactor(float newBias);
+        void setBiasPre(float newBiasPre);
+        void setBiasPost(float newBiasPost);
 
     private:
         float inGain { 1.0f };
         float outGain { 1.0f };
-        float param { 1.0f };       // Unused for now, will be used in future parametric waveshapers
-        float bias { 0.0f };        // Unused for now...
+        float biasPre { 0.0f };
+        float biasPost { 0.0f };
 
         // --- Prevent copy and move ---
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Waveshaper)
