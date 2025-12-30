@@ -15,6 +15,7 @@
 #include "dsp/Dynamics/Gate.cpp"
 
 #include "dsp/Distortion/Waveshaper.cpp"
+#include "dsp/Distortion/TubeModel.cpp"
 
 // GUI C++ Files
 

@@ -30,6 +30,7 @@
 
 // Distortion
 #include "dsp/Distortion/Waveshaper.h"
+#include "dsp/Distortion/TubeModel.h"
 
 // --- UTILS ---
 #include "utils/PresetManager.h"
