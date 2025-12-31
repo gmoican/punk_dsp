@@ -18,6 +18,7 @@
 #include "dsp/Distortion/TubeModel.cpp"
 
 // GUI C++ Files
+#include "gui/ExamplesLnF.cpp"
 
 // UTILS C++ Files
 #include "utils/PresetManager.cpp"

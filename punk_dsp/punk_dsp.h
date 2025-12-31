@@ -32,5 +32,8 @@
 #include "dsp/Distortion/Waveshaper.h"
 #include "dsp/Distortion/TubeModel.h"
 
+// --- GUI ---
+#include "gui/ExamplesLnF.h"
+
 // --- UTILS ---
 #include "utils/PresetManager.h"
