@@ -1,0 +1,12 @@
+[submodule "examples/cmake"]
+	path = examples/cmake
+	url = https://github.com/sudara/cmake-includes.git
+	branch = main
+[submodule "examples/JUCE"]
+	path = examples/JUCE
+	url = https://github.com/juce-framework/JUCE/
+	branch = develop
+[submodule "examples/clap-juce-extensions"]
+	path = examples/clap-juce-extensions
+	url = https://github.com/free-audio/clap-juce-extensions.git
+	branch = main
