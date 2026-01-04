@@ -102,7 +102,7 @@ namespace punk_dsp
 
     void TubeModel::calculateSag(float inputSignal)
     {
-        float signalMagnitude = std::abs(x);
+        float signalMagnitude = std::abs(inputSignal);
         float decayFactor = std::exp(-0.001f * signalMagnitude * (1000.0f / sagTime));
         sagResponse = std::max(0.1f, sagResponse * decayFactor + 0.01f * signalMagnitude);
     }

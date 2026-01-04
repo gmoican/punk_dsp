@@ -36,18 +36,18 @@ namespace punk_dsp
         // auto textBounds = juce::Rectangle<int>(x, y, width, height).reduced(width/4, height/4).toFloat();
 
         // Draw background circle
-        g.setColour(UIColors::secondary.withAlpha(0.3f));
+        g.setColour(UIConstants::secondary.withAlpha(0.3f));
         g.fillEllipse(rx, ry, rw, rw);
 
         // Draw track (background arc)
-        g.setColour(UIColors::secondary);
+        g.setColour(UIConstants::secondary);
         juce::Path trackArc;
         trackArc.addCentredArc(centreX, centreY, radius, radius, 0.0f,
                             rotaryStartAngle, rotaryEndAngle, true);
         g.strokePath(trackArc, juce::PathStrokeType(3.0f, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
 
         // Draw filled arc (value)
-        g.setColour(UIColors::primary);
+        g.setColour(UIConstants::primary);
         juce::Path valueArc;
         valueArc.addCentredArc(centreX, centreY, radius, radius, 0.0f,
                             rotaryStartAngle, angle, true);
@@ -80,7 +80,7 @@ namespace punk_dsp
             textToDisplay = slider.getName();
         }
         
-        g.setColour(UIColors::text);
+        g.setColour(UIConstants::text);
         g.setFont(juce::FontOptions(fontSize));
         
         // Draw the text in the center of the knob
@@ -106,7 +106,7 @@ namespace punk_dsp
         juce::ignoreUnused(shouldDrawButtonAsDown);
             
         auto buttonArea = button.getLocalBounds().toFloat();
-        g.setColour (shouldDrawButtonAsHighlighted ? UIColors::primary : backgroundColour);
+        g.setColour (shouldDrawButtonAsHighlighted ? UIConstants::primary : backgroundColour);
         g.fillRoundedRectangle(buttonArea, 7.0f);
     }
 
