@@ -15,6 +15,7 @@ namespace punk_dsp
 
         // Sizing constants
         const int headerHeight = 30;
+        const int comboboxHeight = 30;
         const int knobSize = 90;
         const int margin = 20;
     }
@@ -43,5 +44,22 @@ namespace punk_dsp
         void drawButtonText(juce::Graphics& g, juce::TextButton& button,
                             bool shouldDrawButtonAsHighlighted,
                             bool shouldDrawButtonAsDown) override;
+        
+        // ComboBox
+        void drawComboBox(juce::Graphics&, int width, int height, bool isButtonDown,
+                          int buttonX, int buttonY, int buttonW, int buttonH,
+                          juce::ComboBox&) override;
+
+        void positionComboBoxText(juce::ComboBox&, juce::Label&) override;
+
+        juce::Font getComboBoxFont(juce::ComboBox&) override;
+
+        void drawPopupMenuItem(juce::Graphics&, const juce::Rectangle<int>& area,
+                               bool isSeparator, bool isActive, bool isHighlighted,
+                               bool isTicked, bool hasSubMenu, const juce::String& text,
+                               const juce::String& shortcutKeyText,
+                               const juce::Drawable* icon, const juce::Colour* textColourToUse) override;
+
+        void drawPopupMenuBackground(juce::Graphics&, int width, int height) override;
     };
 }
