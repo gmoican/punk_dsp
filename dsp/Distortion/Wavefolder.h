@@ -37,25 +37,28 @@ namespace punk_dsp
         void setDrive (float newDrive);
         void setOutGain (float newOutGain);
         void setThreshold (float newThreshold);
-        void setSymmetry (float newSymmetry);
-        void setBias (float newBias);
+        void setBiasPre (float newBiasPre);
+        void setBiasPost (float newBiasPost);
         void setMix (float newMix);
         
         // Sample processing
         float foldToRangeSample(float sample);
         float foldSinSample(float sample);
+        float comboFoldSample(float sample);
+        float extraFoldToRangeSample(float sample);
         
         // Buffer processing
         void foldToRangeBuffer(juce::AudioBuffer<float>& inputBuffer);
         void foldSinBuffer(juce::AudioBuffer<float>& inputBuffer);
+        void comboFoldBuffer(juce::AudioBuffer<float>& inputBuffer);
        
     private:
         // Parameters
         float drive     { 1.0f };   // linear
         float outGain   { 1.0f };   // linear
         float threshold { 0.6f };   // fold limit
-        float symmetry  { 0.0f };   // [-1..1]
-        float bias      { 0.0f };   // pre-fold offset
+        float biasPre   { 0.0f };   // [-1..1]
+        float biasPost  { 0.0f };   // pre-fold offset
         float mix       { 1.0f };   // wet
     };
 }

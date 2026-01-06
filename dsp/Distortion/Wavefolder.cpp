@@ -17,14 +17,14 @@ namespace punk_dsp
         outGain = newOutGain;
     }
 
-    void Wavefolder::setBias(float newBias)
+    void Wavefolder::setBiasPre(float newBiasPre)
     {
-        bias = juce::jlimit(-1.0f, 1.0f, newBias);
+        biasPre = juce::jlimit(-1.0f, 1.0f, newBiasPre);
     }
 
-    void Wavefolder::setSymmetry(float newSymemtry)
+    void Wavefolder::setBiasPost(float newBiasPost)
     {
-        symmetry = juce::jlimit(-1.0f, 1.0f, newSymemtry);
+        biasPost = juce::jlimit(-1.0f, 1.0f, newBiasPost);
     }
 
     void Wavefolder::setThreshold(float newThres)
@@ -40,29 +40,44 @@ namespace punk_dsp
     // --- --- SAMPLE PROCESSING --- ---
     float Wavefolder::foldToRangeSample(float sample)
     {
-        auto x = drive * sample + bias;
-
-        auto posThres = juce::jlimit(0.05f, threshold * (1.0f - symmetry));
-        auto negThres = juce::jlimit(0.05f, threshold * (1.0f - symmetry));
+        auto x = drive * (sample + biasPre) + biasPost;
 
         // Fold the wave when it exceeds the threshold
         while (std::abs(x) > threshold)
         {
-            if (x > posThres)
-                x = 2.0f * posThres - x;
-            else if (x < -negThres)
-                x = -2.0f * negThres - x;
+            if (x > threshold)
+                x = 2.0f * threshold - x;
+            else if (x < -threshold)
+                x = -2.0f * threshold - x;
         }
 
-        return x * mix + sample * (1.0f - mix);
+        return outGain * (x * mix + sample * (1.0f - mix));
     }
 
     float Wavefolder::foldSinSample(float sample)
     {
-        auto x = drive * sample + bias;
+        auto x = drive * (sample + biasPre) + biasPost;
 
         // Sine wave folding
-        return juce::dsp::FastMathApproximations::sin(x) * mix + sample * (1.0f - mix);
+        return outGain * (juce::dsp::FastMathApproximations::sin(x) * mix + sample * (1.0f - mix));
+    }
+
+    float Wavefolder::extraFoldToRangeSample(float sample)
+    {
+        while (std::abs(sample) > threshold)
+        {
+            if (sample > threshold)
+                sample = 2.0f * threshold - sample;
+            else if (sample < -threshold)
+                sample = -2.0f * threshold - sample;
+        }
+        return sample;
+    }
+
+    float Wavefolder::comboFoldSample(float sample)
+    {
+        // Sine wave folding -> foldToRange folding
+        return extraFoldToRangeSample( foldSinSample(sample) );
     }
 
     // --- --- BUFFER PROCESSING --- ---
@@ -89,6 +104,19 @@ namespace punk_dsp
             float* channelData = inputBuffer.getWritePointer(channel);
             for (int sample = 0; sample < numSamples; ++sample)
                 channelData[sample] = foldSinSample(channelData[sample]);
+        }
+    }
+
+    void Wavefolder::comboFoldBuffer(juce::AudioBuffer<float>& inputBuffer)
+    {
+        const int numSamples = inputBuffer.getNumSamples();
+        const int numChannels = inputBuffer.getNumChannels();
+
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            float* channelData = inputBuffer.getWritePointer(channel);
+            for (int sample = 0; sample < numSamples; ++sample)
+                channelData[sample] = comboFoldSample(channelData[sample]);
         }
     }
 }
