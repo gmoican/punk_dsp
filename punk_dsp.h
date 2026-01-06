@@ -31,6 +31,11 @@
 // Distortion
 #include "dsp/Distortion/Waveshaper.h"
 #include "dsp/Distortion/TubeModel.h"
+#include "dsp/Distortion/Wavefolder.h"
+
+// Pitch
+// #include "dsp/Pitch/PitchShifter.h"
+// #include "dsp/Pitch/FormantShifter.h"
 
 // --- GUI ---
 #include "gui/ExamplesLnF.h"
