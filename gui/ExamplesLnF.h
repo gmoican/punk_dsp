@@ -7,14 +7,15 @@ namespace punk_dsp
     namespace UIConstants
     {
         // 5-color palette
-        const juce::Colour background    = juce::Colour(0xff1B3C53);
-        const juce::Colour primary       = juce::Colour(0xffDFD0B8);
-        const juce::Colour secondary     = juce::Colour(0xff456882);
-        const juce::Colour text          = juce::Colour(0xffE0D9D9);
-        const juce::Colour highlight     = juce::Colour(0xffD3DAD9);
+        const juce::Colour background    = juce::Colour(0xff070707);
+        const juce::Colour primary       = juce::Colour(0xffB6771D);
+        const juce::Colour secondary     = juce::Colour(0xff854836);
+        const juce::Colour text          = juce::Colour(0xffF7F7F7);
+        const juce::Colour highlight     = juce::Colour(0xffFFB22C);
 
         // Sizing constants
-        const int knobSize = 80;
+        const int headerHeight = 30;
+        const int knobSize = 90;
         const int margin = 20;
     }
 
