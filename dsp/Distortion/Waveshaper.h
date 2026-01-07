@@ -29,13 +29,13 @@ namespace punk_dsp
         void applyATanClipper(juce::AudioBuffer<float>& inputBuffer);
 
         // Parameter Updates
-        void setInGain(float newInGain);
+        void setDrive(float newDrive);
         void setOutGain(float newOutGain);
         void setBiasPre(float newBiasPre);
         void setBiasPost(float newBiasPost);
 
     private:
-        float inGain { 1.0f };
+        float drive { 1.0f };
         float outGain { 1.0f };
         float biasPre { 0.0f };
         float biasPost { 0.0f };

@@ -32,7 +32,7 @@ juce_add_module(modules/punk_dsp)
 
 target_link_libraries(YourTarget
     INTERFACE
-    my_module
+    punk_dsp
 )
 ```
 
@@ -57,7 +57,7 @@ I have not tested if this method works. I suggest sticking to CMake even if it i
 ### DSP Modules
 For now, all my custom classes are inside the `punk_dsp::` namespace. Since most of my current code is for DSP processors, I don't intend to change this but maybe, in a distant future, I may add a `::dsp:: / ::gui:: / ::utils::` distinction.
 
-All my DSP processors have a very similar approach for implementing them in your `PluginProcessor`. There is a quick guide below, but you can check the `README` in the specific folder of this repo in case of doubt.
+All my DSP processors have a very similar approach for implementing them in your `PluginProcessor`. There is a quick guide below, but you can check the `README` in the example plugins for a specific guide.
 
 ```cpp
 #include <punk_dsp/punk_dsp.h>
@@ -80,12 +80,17 @@ processor.updateParameter(newParameterValue);
 processor.process(buffer);
 ```
 
-For detailed documentation on individual classes and processors, see check the `README` files inside the DSP and Utils folders.
-
-## Example projects
-Here are some plugins made with **`punk_dsp`**:
+## Plugins made with **`punk_dsp`**
 * [PunkOTT](https://github.com/gmoican/PunkOTT) (single-band) and [PunkOTT-MB](https://github.com/gmoican/PunkOTT-MB) (multi-band), my personal take of the _Over-The-Top_ style dynamics processor.
 
-## Changelog
-### Version 1.0.0
-- Initial release
+## Example plugins
+The following plugins are intended to be the testbench of the module and therefore contain a very basic implementation of the code developed here.
+* Dynamics:
+    - [Compressor](https://github.com/gmoican/Compressor)
+    - [Lifter](https://github.com/gmoican/Lifter)
+    - [Gate](https://github.com/gmoican/Gate)
+* Distortion:
+    - [Waveshaper](https://github.com/gmoican/Waveshaper)
+    - [TubeModel](https://github.com/gmoican/TubeModel)
+    - [Wavefolder](https://github.com/gmoican/Wavefolder)
+
