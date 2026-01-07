@@ -30,13 +30,13 @@ namespace punk_dsp
     // --- --- SAMPLE PROCESSING --- ---
     float Waveshaper::applySoftClipper(float sample)
     {
-        sample = inGain * (biasPre * sample) + biasPost;
+        sample = inGain * (biasPre + sample) + biasPost;
         return outGain * sample / (std::abs(sample) + 1.0f);
     }
 
     float Waveshaper::applyHardClipper(float sample)
     {
-        sample = inGain * (biasPre * sample) + biasPost;
+        sample = inGain * (biasPre + sample) + biasPost;
         if (sample > 1.0f)
             return outGain * 2.0f / 3.0f;
         else if (sample < -1.0f)
@@ -47,13 +47,13 @@ namespace punk_dsp
 
     float Waveshaper::applyTanhClipper(float sample)
     {
-        sample = inGain * (biasPre * sample) + biasPost;
+        sample = inGain * (biasPre + sample) + biasPost;
         return outGain * 2.0f / juce::MathConstants<float>::pi * juce::dsp::FastMathApproximations::tanh(sample);
     }
 
     float Waveshaper::applyATanClipper(float sample)
     {
-        sample = inGain * (biasPre * sample) + biasPost;
+        sample = inGain * (biasPre + sample) + biasPost;
         return outGain * 2.0f / juce::MathConstants<float>::pi * std::atan(sample);
     }
 
