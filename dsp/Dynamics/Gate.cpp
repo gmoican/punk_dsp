@@ -32,6 +32,7 @@ namespace punk_dsp
     void Gate::updateRatio(float newRatio)
     {
         ratio = newRatio;
+        expansionSlope = ratio - 1.0f;
     }
 
     void Gate::updateThres(float newThres)

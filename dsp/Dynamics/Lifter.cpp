@@ -33,6 +33,7 @@ namespace punk_dsp
     void Lifter::updateRatio(float newRatio)
     {
         ratio = newRatio;
+        compressionSlope = 1.0f - (1.0f / ratio);
     }
 
     void Lifter::updateRange(float newRange)
