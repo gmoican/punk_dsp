@@ -7,102 +7,34 @@ namespace punk_dsp
     class EnvelopeFollower
     {
     public:
-        EnvelopeFollower()
-        {
-            setAttackTime(10.0f);
-            setReleaseTime(100.0f);
-        }
+        EnvelopeFollower();
+        ~EnvelopeFollower() = default;
+
+        void prepare(const juce::dsp::ProcessSpec& spec);
+        void reset();
+
+        void setAttackTime(float newAttMs);
+        void setReleaseTime(float newRelMs);
         
-        void prepare(double sampleRate)
-        {
-            currentSampleRate = sampleRate;
-            updateCoefficients();
-            envelope = 0.0f;
-        }
-        
-        void setAttackTime(float attackMs)
-        {
-            attackTime = attackMs;
-            updateCoefficients();
-        }
-        
-        void setReleaseTime(float releaseMs)
-        {
-            releaseTime = releaseMs;
-            updateCoefficients();
-        }
-        
-        float processSample(float input)
-        {
-            float inputAbs = std::abs(input);
-            
-            if (inputAbs > envelope)
-                envelope += attackCoeff * (inputAbs - envelope);
-            else
-                envelope += releaseCoeff * (inputAbs - envelope);
-            
-            return envelope;
-        }
-        
-        // No creo que este método haga falta...
-        void processBlock(const juce::AudioBuffer<float>& buffer)
-        {
-            int numSamples = buffer.getNumSamples();
-            int numChannels = buffer.getNumChannels();
-            
-            for (int sample = 0; sample < numSamples; ++sample)
-            {
-                float maxSample = 0.0f;
-                
-                // Find the maximum absolute value across all channels
-                for (int channel = 0; channel < numChannels; ++channel)
-                {
-                    float sampleValue = std::abs(buffer.getSample(channel, sample));
-                    maxSample = std::max(maxSample, sampleValue);
-                }
-                
-                processSample(maxSample);
-            }
-        }
-        
-        float getCurrentEnvelope() const
-        {
-            return envelope;
-        }
-        
-        float getCurrentEnvelopeDB() const
-        {
-            return juce::Decibels::gainToDecibels(envelope, -96.0f);
-        }
-        
-        void reset()
-        {
-            envelope = 0.0f;
-        }
+        float getEnvelope();
+        float updateAndReturnEnvelope(float input_lin);
 
     private:
-        // Internal Math Methods
-        void updateCoefficients()
-        {
-            if (currentSampleRate > 0.0)
-            {
-                attackCoeff = 1.0f - std::exp(-1.0f / (attackTime * 0.001f * currentSampleRate));
-                releaseCoeff = 1.0f - std::exp(-1.0f / (releaseTime * 0.001f * currentSampleRate));
-            }
-        }
+        float calculateTimeCoeff (float time_ms);
+        void updateEnvelope (float input_lin);
+
+        // --- Internal State ---
+        float envelope_lin { 0.0f };    // Current envelope value
+                                        // Should be confined between 0 and 1
         
-        float envelope = 0.0f;
-
         // Parameters
-        float attackTime = 10.0f;   // milliseconds
-        float releaseTime = 100.0f; // milliseconds
-
-        // Cached values
-        float attackCoeff = 0.0f;
-        float releaseCoeff = 0.0f;
-        double currentSampleRate = 44100.0;
-
+        float attackCoeff  { 0.0f };   // Smoothing coefficient (Attack)
+        float releaseCoeff { 0.0f };   // Smoothing coefficient (Release)
+        
+        // Cached values for performance
+        float sampleRate { 44100.0f };
+        
         // --- Prevent copy and move ---
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Compressor)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeFollower)
     };
 }
