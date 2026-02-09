@@ -17,6 +17,9 @@
 #include "dsp/Distortion/Waveshaper.cpp"
 #include "dsp/Distortion/TubeModel.cpp"
 #include "dsp/Distortion/Wavefolder.cpp"
+#include "dsp/Distortion/ParametricWaveshaper.cpp"
+
+#include "dsp/Followers/EnvelopeFollower.cpp"
 
 // #include "dsp/Pitch/PitchShifter.cpp"
 // #include "dsp/Pitch/FormantShifter.cpp"

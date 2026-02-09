@@ -32,6 +32,10 @@
 #include "dsp/Distortion/Waveshaper.h"
 #include "dsp/Distortion/TubeModel.h"
 #include "dsp/Distortion/Wavefolder.h"
+#include "dsp/Distortion/ParametricWaveshaper.h"
+
+// Followers
+#include "dsp/Followers/EnvelopeFollower.h"
 
 // Pitch
 // #include "dsp/Pitch/PitchShifter.h"
