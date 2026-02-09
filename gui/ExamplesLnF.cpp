@@ -2,52 +2,41 @@
 
 namespace punk_dsp
 {
-    ExamplesLnF::ExamplesLnF()
-    {
-        // Set default colors for components
-        setColour(juce::Slider::thumbColourId, UIConstants::primary);
-        setColour(juce::Slider::trackColourId, UIConstants::secondary);
-        setColour(juce::Slider::backgroundColourId, UIConstants::background);
-
-        setColour(juce::TextButton::buttonColourId, UIConstants::secondary);
-        setColour(juce::TextButton::buttonOnColourId, UIConstants::primary);
-        setColour(juce::TextButton::textColourOffId, UIConstants::text);
-        setColour(juce::TextButton::textColourOnId, UIConstants::background);
-
-        setColour(juce::ComboBox::backgroundColourId, UIConstants::secondary);
-        setColour(juce::ComboBox::textColourId, UIConstants::text);
-    }
-
     void ExamplesLnF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
                                             float sliderPos, float rotaryStartAngle, float rotaryEndAngle,
                                             juce::Slider& slider)
     {
         // juce::ignoreUnused(slider);
         
-        auto radius = (float)juce::jmin(width / 2, height / 2) - 4.0f;
-        auto centreX = (float)x + (float)width * 0.5f;
-        auto centreY = (float)y + (float)height * 0.5f;
+        auto radius = (float) juce::jmin(width / 2, height / 2) - 4.0f;
+        auto centreX = (float) x + (float)width * 0.5f;
+        auto centreY = (float) y + (float)height * 0.5f;
         auto rx = centreX - radius;
         auto ry = centreY - radius;
         auto rw = radius * 2.0f;
         auto angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
+        // Find colours
+        auto outline = slider.findColour(juce::Slider::rotarySliderOutlineColourId);
+        auto fill    = slider.findColour(juce::Slider::rotarySliderFillColourId);
+        auto textCol = slider.findColour(juce::Slider::textBoxTextColourId);
+        
         // // Define the central area for text
         // auto textBounds = juce::Rectangle<int>(x, y, width, height).reduced(width/4, height/4).toFloat();
 
         // Draw background circle
-        g.setColour(UIConstants::secondary.withAlpha(0.3f));
+        g.setColour(outline.withAlpha(0.3f));
         g.fillEllipse(rx, ry, rw, rw);
 
         // Draw track (background arc)
-        g.setColour(UIConstants::secondary);
+        g.setColour(outline);
         juce::Path trackArc;
         trackArc.addCentredArc(centreX, centreY, radius, radius, 0.0f,
                             rotaryStartAngle, rotaryEndAngle, true);
         g.strokePath(trackArc, juce::PathStrokeType(3.0f, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
 
         // Draw filled arc (value)
-        g.setColour(UIConstants::primary);
+        g.setColour(fill);
         juce::Path valueArc;
         valueArc.addCentredArc(centreX, centreY, radius, radius, 0.0f,
                             rotaryStartAngle, angle, true);
@@ -80,7 +69,7 @@ namespace punk_dsp
             textToDisplay = slider.getName();
         }
         
-        g.setColour(UIConstants::text);
+        g.setColour(textCol);
         g.setFont(juce::FontOptions(fontSize));
         
         // Draw the text in the center of the knob
@@ -106,7 +95,7 @@ namespace punk_dsp
         juce::ignoreUnused(shouldDrawButtonAsDown);
             
         auto buttonArea = button.getLocalBounds().toFloat();
-        g.setColour (shouldDrawButtonAsHighlighted ? UIConstants::primary : backgroundColour);
+        g.setColour (shouldDrawButtonAsHighlighted ? button.findColour(juce::TextButton::buttonOnColourId) : backgroundColour);
         g.fillRoundedRectangle(buttonArea, 7.0f);
     }
 
