@@ -11,10 +11,10 @@ namespace punk_dsp
         ~EnvelopeFollower() = default;
 
         void prepare(const juce::dsp::ProcessSpec& spec);
-        void reset();
+        // void reset();
 
-        void setAttackTime(float newAttMs);
-        void setReleaseTime(float newRelMs);
+        void setAttack(float newAttMs);
+        void setRelease(float newRelMs);
         
         float getEnvelope();
         float updateAndReturnEnvelope(float input_lin);

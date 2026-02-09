@@ -15,10 +15,10 @@ namespace punk_dsp
         releaseCoeff = calculateTimeCoeff (100.0f);
     }
 
-    void EnvelopeFollower::reset()
-    {
-        std::fill (envelope.begin(), envelope.end(), 0.0f);
-    }
+    // void EnvelopeFollower::reset()
+    // {
+    //     std::fill (envelope.begin(), envelope.end(), 0.0f);
+    // }
 
     float EnvelopeFollower::calculateTimeCoeff(float time_ms)
     {
