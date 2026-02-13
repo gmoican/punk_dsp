@@ -23,8 +23,26 @@ namespace punk_dsp
     class ExamplesLnF : public juce::LookAndFeel_V4
     {
     public:
-        ExamplesLnF();
+        ExamplesLnF()
+        {
+            // Sliders colour palette
+            setColour(juce::Slider::thumbColourId,          UIConstants::primary);
+            setColour(juce::Slider::trackColourId,          UIConstants::secondary);
+            setColour(juce::Slider::rotarySliderFillColourId, UIConstants::primary);
+            setColour(juce::Slider::rotarySliderOutlineColourId, UIConstants::secondary);
+            setColour(juce::Slider::textBoxTextColourId,    UIConstants::text);
             
+            // TextButton colour palette
+            setColour(juce::TextButton::buttonColourId,     UIConstants::secondary);
+            setColour(juce::TextButton::buttonOnColourId,   UIConstants::primary);
+            setColour(juce::TextButton::textColourOffId,    UIConstants::text);
+            
+            // ComboBox colour palette
+            setColour(juce::ComboBox::backgroundColourId,   UIConstants::secondary);
+            setColour(juce::ComboBox::outlineColourId,      UIConstants::secondary.darker());
+            setColour(juce::ComboBox::arrowColourId,        UIConstants::text);
+        }
+        
         // Rotary slider
         void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
                             float sliderPos, float rotaryStartAngle, float rotaryEndAngle,
