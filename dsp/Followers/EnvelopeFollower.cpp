@@ -15,16 +15,9 @@ namespace punk_dsp
         releaseCoeff = calculateTimeCoeff (100.0f);
     }
 
-    // void EnvelopeFollower::reset()
-    // {
-    //     std::fill (envelope.begin(), envelope.end(), 0.0f);
-    // }
-
     float EnvelopeFollower::calculateTimeCoeff(float time_ms)
     {
-        // 1-pole filter coefficient calculation (alpha = e^(-1 / (sampleRate * time_in_seconds)))
-        // We use -1.0f/tau as the exponent for the exponential smoothing factor.
-        return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+        return std::exp(-2.0f * juce::MathConstants<float>::pi * 1000.f / time_ms / sampleRate);
     }
 
     void EnvelopeFollower::setAttack(float newAttMs)
