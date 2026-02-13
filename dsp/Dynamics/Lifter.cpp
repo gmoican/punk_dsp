@@ -27,7 +27,7 @@ namespace punk_dsp
 
     float Lifter::calculateTimeCoeff(float time_ms)
     {
-        return std::exp(-1.0f / (sampleRate * (time_ms / 1000.0f)));
+        return std::exp(-2.0f * juce::MathConstants<float>::pi * 1000.f / time_ms / sampleRate);
     }
 
     void Lifter::updateRatio(float newRatio)
