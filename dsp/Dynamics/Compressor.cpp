@@ -26,7 +26,8 @@ namespace punk_dsp
 
     float Compressor::calculateTimeCoeff(float time_ms)
     {
-        return std::exp(-2.0f * juce::MathConstants<float>::pi * 1000.f / time_ms / sampleRate);
+        // return std::exp(-2.0f * juce::MathConstants<float>::pi * 1000.f / time_ms / sampleRate);
+        return std::exp(-1.f / (0.001f * time_ms * sampleRate));
     }
 
 
