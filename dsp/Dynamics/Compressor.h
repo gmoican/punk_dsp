@@ -38,6 +38,8 @@
         */
         void process(juce::AudioBuffer<float>& inputBuffer);
 
+        void processWithSidechain(juce::AudioBuffer<float>& inputBuffer, juce::AudioBuffer<float>& sidechainBuffer);
+
     private:
         // Internal Math Methods
         float calculateTargetGain (float inputDB);

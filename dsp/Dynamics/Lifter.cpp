@@ -151,4 +151,51 @@ namespace punk_dsp
             envelope[channel] = currentGA_linear;
         }
     }
+
+    void Lifter::processWithSidechain(juce::AudioBuffer<float>& inputBuffer, juce::AudioBuffer<float>& sidechainBuffer)
+    {
+        const int numSamples = inputBuffer.getNumSamples();
+        const int numChannels = inputBuffer.getNumChannels();
+        
+        // Ensure envelope vector is correctly sized (safety)
+        if ((int)envelope.size() != numChannels)
+            envelope.assign(numChannels, 1.0f);
+
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            // Pointers for reading input and writing wet output
+            float* sidechainData = sidechainBuffer.getReadPointer(ch);
+            float* channelData = inputBuffer.getWritePointer(channel);
+            currentGA_linear = envelope[channel];
+
+            for (int sample = 0; sample < numSamples; ++sample)
+            {
+                float inputSample = channelData[sample];
+                
+                // 1. Identify Sidechain Input based on Topology
+                float sidechainInput = sidechainData[sample];
+                
+                if (!useFeedForward)
+                {
+                    // Feed-back uses the PREVIOUS output (estimated by current envelope)
+                    float prevGain = currentGA_linear * makeUpGain_linear;
+                    sidechainInput = sidechainInput * prevGain;
+                }
+
+                // 2. Detection (Sidechain)
+                const float magnitude = std::max( std::abs(sidechainInput), lifterMinMagnitude );
+                const float inputDB = juce::Decibels::gainToDecibels(magnitude);
+                
+                // 3. ENVELOPE SMOOTHING (in dB)
+                float targetGR_lin = calculateTargetGain(inputDB);
+                currentGA_linear = updateEnvelope(targetGR_lin, currentGA_linear);
+                
+                // 4. APPLY GAIN (in-place)
+                channelData[sample] = inputSample * currentGA_linear * makeUpGain_linear * mix + inputSample * (1.0f - mix);
+            }
+
+            // Store the final envelope value for the start of the next block
+            envelope[channel] = currentGA_linear;
+        }
+    }
 }

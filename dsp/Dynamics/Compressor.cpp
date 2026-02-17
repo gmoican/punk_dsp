@@ -161,4 +161,54 @@ namespace punk_dsp
             if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
         }
     }
+
+    void Compressor::processWithSidechaing(juce::AudioBuffer<float>& inputBuffer, juce::AudioBuffer<float>& sidechainBuffer)
+    {
+        const int numSamples = inputBuffer.getNumSamples();
+        const int numChannels = inputBuffer.getNumChannels();
+        
+        if ((int)envelope.size() != numChannels)
+            envelope.assign(numChannels, 0.0f);
+        
+        for (int ch = 0; ch < numChannels; ++ch)
+        {
+            float* sidechainData = sidechainBuffer.getReadPointer(ch);
+            float* channelData = inputBuffer.getWritePointer(ch);
+            float currentEnv = envelope[ch];
+            
+            for (int sample = 0; sample < numSamples; ++sample)
+            {
+                float input = channelData[sample];
+                
+                // 1. Identify Sidechain Input based on Topology
+                float sidechainInput = sidechainData[sample];
+                
+                if (!useFeedForward)
+                {
+                    // Feed-back uses the PREVIOUS output (estimated by current envelope)
+                    float prevGain = juce::Decibels::decibelsToGain(currentEnv + makeUpGaindB);
+                    sidechainInput = sidechainInput * prevGain;
+                }
+                
+                // 2. Detection (Sidechain)
+                float mag = std::max( std::abs(sidechainInput), compMinMagnitude );
+                float inputDB = juce::Decibels::gainToDecibels(mag);
+                
+                // 3. Gain Computer & Ballistics
+                float targetGR = calculateTargetGain(inputDB);
+                currentEnv = updateEnvelope(targetGR, currentEnv);
+                
+                // 4. Apply Gain
+                float totalGainDB = currentEnv + makeUpGaindB;
+                float gainLinear = juce::Decibels::decibelsToGain(totalGainDB);
+                
+                float processed = input * gainLinear;
+                channelData[sample] = (processed * mix) + (input * (1.0f - mix));
+            }
+            
+            envelope[ch] = currentEnv;
+            
+            if (ch == 0) currentGR_dB = currentEnv; // For meter reporting
+        }
+    }
 }

@@ -138,4 +138,46 @@ namespace punk_dsp
             envelope[channel] = currentGR_dB;        
         }
     }
+
+    void Gate::processWithSidechain(juce::AudioBuffer<float>& inputBuffer, juce::AudioBuffer<float>& sidechainBuffer)
+    {
+        const int numSamples = inputBuffer.getNumSamples();
+        const int numChannels = inputBuffer.getNumChannels();
+        
+        // Ensure envelope vector is correctly sized (safety)
+        if ((int)envelope.size() != numChannels)
+            envelope.assign(numChannels, 1.0f);
+
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            // Pointers for reading input and writing wet output
+            float* sidechainData = sidechainBuffer.getReadPointer(ch);
+            float* channelData = inputBuffer.getWritePointer(channel);
+            currentGR_dB = envelope[channel];
+
+            for (int sample = 0; sample < numSamples; ++sample)
+            {
+                float inputSample = channelData[sample];
+
+                // 1. SIDECHAIN
+                float sidechainInput = sidechainData[sample];
+                float magnitude = std::max( std::abs (sidechainInput), gateMinMagnitude );
+                
+                // Convert magnitude to dB
+                const float inputDB = juce::Decibels::gainToDecibels(magnitude);
+
+                // 2. Gain Computer & Ballistics
+                float targetGR_dB = calculateTargetGain(inputDB);
+                currentGR_dB = updateEnvelope(targetGR_dB, currentGR_dB);
+                
+                // 4. APPLY GAIN (in-place)
+                const float gainReductionLinear = juce::Decibels::decibelsToGain(currentGR_dB);
+                float processed = inputSample * gainReductionLinear;
+                channelData[sample] = (processed * mix) + (inputSample * (1.0f - mix));
+            }
+            
+            // Store the final envelope value for the start of the next block
+            envelope[channel] = currentGR_dB;        
+        }
+    }
 }
